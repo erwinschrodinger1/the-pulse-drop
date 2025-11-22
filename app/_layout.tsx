@@ -2,10 +2,12 @@ import AppHeader from '@/components/AppHeader';
 import '../global.css';
 
 import { Stack } from 'expo-router';
-import { Image, ImageBackground, View } from 'react-native';
+import { Image, ImageBackground, ScrollView, View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import BottomNav from '@/components/NavigationBar';
 
 export default function Layout() {
+
   return (
     <View className="flex-1 bg-white">
       <ImageBackground
@@ -22,18 +24,19 @@ export default function Layout() {
 
         {/* Content on top */}
         <AppHeader />
-        <SafeAreaView className='flex-1'>
+        <SafeAreaView className='flex-1 mt-16'>
           <Stack screenOptions={{
             contentStyle: { backgroundColor: 'transparent' },
+            headerShown: false,
             headerTransparent: true,
             headerTitle: "",
             headerShadowVisible: false,
             headerBackVisible: false
           }} />
         </SafeAreaView>
-
+        <BottomNav />
       </ImageBackground>
-    </View>
+    </View >
   );
 }
 

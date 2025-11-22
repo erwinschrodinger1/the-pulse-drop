@@ -25,7 +25,7 @@ export default function Home() {
 
     return (
         <View className="flex-1">
-            <View className="mt-8 items-center">
+            <View className="mt-[-42] items-center">
                 <View className="relative w-5/6 h-auto aspect-square">
                     {/* Scribble / profile background */}
                     <Image
