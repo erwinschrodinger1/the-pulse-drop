@@ -10,7 +10,7 @@ const TABS = [
     { name: "home", icon: "home", route: "/" },
     { name: "request", icon: "heart-outline", route: "/request" },
     { name: "menu", icon: "grid-outline", route: "/credit-detail" },
-    { name: "settings", icon: "settings-outline", route: "/settings" },
+    { name: "settings", icon: "settings-outline", route: "/(auth)/login" },
 ];
 
 export default function BottomNav() {
