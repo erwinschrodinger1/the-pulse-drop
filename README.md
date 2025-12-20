@@ -76,6 +76,9 @@ Leaderboards, volunteer IDs, city groups, milestones.
 <img src="assets/ui/Screenshot_2025-12-06-19-18-07-782.jpg" width="280">
 <img src="assets/ui/Screenshot_2025-12-06-19-18-04-473.jpg" width="280">
 <img src="assets/ui/Screenshot_2025-12-06-19-17-59-448.jpg" width="280">
+<img src="assets/ui/OnboardingScreen1.jpg" width="280">
+<img src="assets/ui/OnboardingScreen2.jpg" width="280">
+<img src="assets/ui/OnboardingScreen3.jpg" width="280">
 
 </div>
 
