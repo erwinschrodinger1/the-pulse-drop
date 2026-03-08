@@ -6,37 +6,36 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import BottomNav from '@/components/NavigationBar';
 
 export default function Layout() {
+  return (
+    <View className="flex-1 bg-white">
+      <ImageBackground
+        source={require('@/assets/images/background.png')}
+        className="flex-1"
+        resizeMode="none"
+      >
+        {/* Bottom illustration */}
+        <Image
+          source={require('@/assets/images/background-1.png')}
+          className="absolute left-0 right-0 top-20 w-full"
+          resizeMode="contain"
+        />
 
-    return (
-        <View className="flex-1 bg-white">
-            <ImageBackground
-                source={require('@/assets/images/background.png')}
-                className="flex-1"
-                resizeMode="none"
-            >
-                {/* Bottom illustration */}
-                <Image
-                    source={require('@/assets/images/background-1.png')}
-                    className="absolute top-20 left-0 right-0 w-full"
-                    resizeMode="contain"
-                />
-
-                {/* Content on top */}
-                <AppHeader />
-                <SafeAreaView className='flex-1 mt-16'>
-                    <Stack screenOptions={{
-                        contentStyle: { backgroundColor: 'transparent' },
-                        headerShown: false,
-                        headerTransparent: true,
-                        headerTitle: "",
-                        headerShadowVisible: false,
-                        headerBackVisible: false
-                    }} />
-                </SafeAreaView>
-                <BottomNav />
-            </ImageBackground>
-        </View >
-    );
+        {/* Content on top */}
+        <AppHeader />
+        <SafeAreaView className="mt-16 flex-1">
+          <Stack
+            screenOptions={{
+              contentStyle: { backgroundColor: 'transparent' },
+              headerShown: false,
+              headerTransparent: true,
+              headerTitle: '',
+              headerShadowVisible: false,
+              headerBackVisible: false,
+            }}
+          />
+        </SafeAreaView>
+        <BottomNav />
+      </ImageBackground>
+    </View>
+  );
 }
-
-

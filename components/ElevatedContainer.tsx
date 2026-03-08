@@ -1,21 +1,18 @@
-import { View, ViewProps } from "react-native";
+import { View, ViewProps } from 'react-native';
 
 type ElevatedContainerProps = ViewProps & {
-    children: React.ReactNode;
-    className?: string; // optional for NativeWind
+  children: React.ReactNode;
+  className?: string; // optional for NativeWind
 };
 
 export default function ElevatedContainer({
-    children,
-    className = "",
-    ...rest
+  children,
+  className = '',
+  ...rest
 }: ElevatedContainerProps) {
-    return (
-        <View
-            className={`bg-white rounded-lg shadow-md p-4 ${className}`}
-            {...rest}
-        >
-            {children}
-        </View>
-    );
+  return (
+    <View className={`rounded-lg bg-white p-4 shadow-md ${className}`} {...rest}>
+      {children}
+    </View>
+  );
 }

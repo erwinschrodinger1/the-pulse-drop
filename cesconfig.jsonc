@@ -8,17 +8,17 @@
       "name": "expo-router",
       "type": "navigation",
       "options": {
-        "type": "stack"
-      }
+        "type": "stack",
+      },
     },
     {
       "name": "nativewind",
-      "type": "styling"
+      "type": "styling",
     },
     {
       "name": "firebase",
-      "type": "authentication"
-    }
+      "type": "authentication",
+    },
   ],
   "flags": {
     "noGit": false,
@@ -27,16 +27,16 @@
     "importAlias": true,
     "packageManager": "npm",
     "eas": false,
-    "publish": false
+    "publish": false,
   },
   "packageManager": {
     "type": "npm",
-    "version": "11.6.2"
+    "version": "11.6.2",
   },
   "os": {
     "type": "Linux",
     "platform": "linux",
     "arch": "x64",
-    "kernelVersion": "6.17.1-arch1-1"
-  }
+    "kernelVersion": "6.17.1-arch1-1",
+  },
 }

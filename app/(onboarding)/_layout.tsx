@@ -1,7 +1,9 @@
-import { Stack } from "expo-router";
+import { Stack } from 'expo-router';
 
 export default function OnboardingLayout() {
-    return (
-        <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: "white" } }} />
-    );
+  return (
+    <Stack
+      screenOptions={{ headerShown: false, contentStyle: { backgroundColor: 'white' } }}
+    />
+  );
 }
