@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,8 @@ import {
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Toast } from 'toastify-react-native';
+import * as WebBrowser from 'expo-web-browser';
+import { signInWithPassword, signInWithOAuth } from '@/lib/supabase-auth';
 
 export default function SigninScreen() {
   const router = useRouter();
@@ -21,17 +23,45 @@ export default function SigninScreen() {
   const [secure, setSecure] = useState(true);
   const [focus, setFocus] = useState<'username' | 'password' | null>(null);
 
-    const handleLogin = () => {
-        if (!username.trim() || !password.trim()) {
-            Toast.error("Please enter both username and password");
-            return;
-        }
-        router.push("/(app)/(tabs)");
+  useEffect(() => {
+    void WebBrowser.warmUpAsync();
+    return () => {
+      void WebBrowser.coolDownAsync();
     };
+  }, []);
 
-    const inputBase = "flex-row items-center bg-gray-50 border rounded-2xl px-4 h-12";
-    const inputNormal = "border-gray-200";
-    const inputFocused = "border-blue-500";
+  const handleLogin = async () => {
+    if (!username.trim() || !password.trim()) {
+      Toast.error('Please enter both username and password');
+      return;
+    }
+    try {
+      await signInWithPassword(username, password);
+      // Gate component will handle navigation automatically after auth state changes
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Login failed';
+      Toast.error(message);
+    }
+  };
+
+  const handleOAuth = async (provider: 'google' | 'facebook') => {
+    try {
+      await signInWithOAuth(provider);
+      // Gate component will handle navigation automatically after auth state changes
+    } catch (error) {
+      console.error('OAuth login error:', error);
+      Toast.error('OAuth login failed');
+    }
+  };
+
+  const inputStyle = (field: 'username' | 'password') =>
+    `flex-row items-center bg-gray-50 border rounded-2xl px-4 h-12 ${
+      focus === field ? 'border-blue-500' : 'border-gray-200'
+    }`;
+
+  const inputBase = 'flex-row items-center bg-gray-50 border rounded-2xl px-4 h-12';
+  const inputNormal = 'border-gray-200';
+  const inputFocused = 'border-blue-500';
 
   return (
     <KeyboardAvoidingView
@@ -126,48 +156,33 @@ export default function SigninScreen() {
           <View className="h-px flex-1 bg-gray-200" />
         </View>
 
-        {/* Social buttons */}
+        {/* OAuth buttons */}
         <View className="flex-row gap-3">
-          <Pressable className="flex-1 flex-row items-center justify-center rounded-2xl border border-gray-200 px-4 py-3">
+          <Pressable
+            className="flex-1 flex-row items-center justify-center rounded-2xl border border-gray-200 py-3"
+            onPress={() => handleOAuth('google')}
+          >
             <FontAwesome name="google" size={18} color="#DB4437" />
             <Text className="ml-2 font-medium text-gray-700">Google</Text>
           </Pressable>
 
-          <Pressable className="flex-1 flex-row items-center justify-center rounded-2xl border border-gray-200 px-4 py-3">
+          <Pressable
+            className="flex-1 flex-row items-center justify-center rounded-2xl border border-gray-200 py-3"
+            onPress={() => handleOAuth('facebook')}
+          >
             <Ionicons name="logo-facebook" size={18} color="#1877F2" />
             <Text className="ml-2 font-medium text-gray-700">Facebook</Text>
           </Pressable>
         </View>
 
-                {/* Divider */}
-                <View className="flex-row items-center my-6 w-full">
-                    <View className="flex-1 h-px bg-gray-200" />
-                    <Text className="mx-3 text-gray-400 text-sm">Or continue with</Text>
-                    <View className="flex-1 h-px bg-gray-200" />
-                </View>
-
-                {/* Social buttons */}
-                <View className="flex-row gap-3">
-                    <Pressable className="flex-1 flex-row items-center justify-center border border-gray-200 rounded-2xl px-4 py-3">
-                        <FontAwesome name="google" size={18} color="#DB4437" />
-                        <Text className="ml-2 text-gray-700 font-medium">Google</Text>
-                    </Pressable>
-
-                    <Pressable className="flex-1 flex-row items-center justify-center border border-gray-200 rounded-2xl px-4 py-3">
-                        <Ionicons name="logo-facebook" size={18} color="#1877F2" />
-                        <Text className="ml-2 text-gray-700 font-medium">Facebook</Text>
-                    </Pressable>
-                </View>
-
-                {/* Signup link */}
-                <View className="flex-row justify-center mt-6">
-                    <Text className="text-gray-500">Don’t have an account? </Text>
-                    <Pressable onPress={() => router.push("/(auth)/register")} hitSlop={10}>
-                        <Text className="text-blue-600 font-semibold">Sign up</Text>
-                    </Pressable>
-                </View>
-            </ScrollView>
-        </KeyboardAvoidingView>
-    );
+        {/* Signup link */}
+        <View className="mt-6 flex-row justify-center">
+          <Text className="text-gray-500">Don’t have an account? </Text>
+          <Pressable onPress={() => router.push('/(auth)/register')} hitSlop={10}>
+            <Text className="font-semibold text-blue-600">Sign up</Text>
+          </Pressable>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
 }
-

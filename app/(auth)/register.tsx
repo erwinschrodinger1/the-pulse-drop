@@ -13,6 +13,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Toast } from 'toastify-react-native';
+import { signUp } from '@/lib/supabase-auth';
 
 export default function RegisterScreen() {
   const router = useRouter();
@@ -24,19 +25,25 @@ export default function RegisterScreen() {
 
   const [focus, setFocus] = useState<'name' | 'email' | 'password' | null>(null);
 
-    const handleRegister = () => {
-        if (!fullName.trim() || !email.trim() || !password.trim()) {
-            Toast.error("Please fill in full name, email and password");
-            return;
-        }
-        // TODO: call backend register
-        Toast.info("Please Verify Email");
+  const handleRegister = async () => {
+    if (!fullName.trim() || !email.trim() || !password.trim()) {
+      Toast.error('Please fill in full name, email and password');
+      return;
+    }
 
-        router.push({
-            pathname: "/(auth)/otp",
-            params: { from: "signup", email },
-        });
-    };
+    try {
+      await signUp(fullName, email, password);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Registration failed';
+      Toast.error(message);
+      return;
+    }
+
+    router.push({
+      pathname: '/(auth)/verify-email',
+      params: { fullName, email, password },
+    });
+  };
 
   const inputBase = 'flex-row items-center bg-gray-50 border rounded-2xl px-4 h-12';
   const inputNormal = 'border-gray-200';

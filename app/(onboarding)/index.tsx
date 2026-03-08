@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { useAppState } from '@/providers/AppStateProvider';
+import { useAuthContext } from '@/hooks/use-auth-context';
 
 const { width } = Dimensions.get('window');
 
@@ -49,7 +49,7 @@ export default function OnboardingScreen() {
   const listRef = useRef<FlatList<Slide>>(null);
   const [index, setIndex] = useState(0);
 
-  const { completeOnboarding } = useAppState();
+  const { completeOnboarding } = useAuthContext();
   const goToLogin = async () => {
     await completeOnboarding(); // updates RootLayout state
     router.replace('/(auth)/login');
