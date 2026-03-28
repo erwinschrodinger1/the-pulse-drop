@@ -2,18 +2,21 @@ import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
 import Constants from 'expo-constants';
 import { supabase } from '@/lib/supabase';
+import { Toast } from 'toastify-react-native';
+import { EmailOtpType } from '@supabase/supabase-js';
 
 WebBrowser.maybeCompleteAuthSession();
 
 export type OAuthProvider = 'google' | 'facebook';
 
-function getRedirectUrl() {
+function getRedirectUrl(params?: { type: EmailOtpType }) {
   const scheme = Constants.expoConfig?.scheme;
   const resolvedScheme = Array.isArray(scheme) ? scheme[0] : scheme;
 
   return AuthSession.makeRedirectUri({
     scheme: resolvedScheme,
     path: 'auth-callback',
+    queryParams: params ? { type: params.type } : undefined,
   });
 }
 
@@ -72,15 +75,51 @@ export async function signInWithPassword(email: string, password: string) {
 }
 
 export async function signUp(name: string, email: string, password: string) {
+  const emailRedirectTo = getRedirectUrl({type: 'signup'});
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       data: { display_name: name },
-      emailRedirectTo: 'pulsedrop://validated-email',
+      emailRedirectTo,
     },
   });
 
   if (error) throw error;
+
+  if (data.user?.role != "authenticated") {
+    throw new Error('Registration failed: email already exist');
+  }
+
+  return data;
+}
+
+// export async function resendVerificationEmail(email: string, type: "signup"|"recovery") {
+//   const emailRedirectTo = getRedirectUrl();
+  
+//   const { data, error } = await supabase.auth.resend({
+//     type: type,
+//     email,
+//     options: {
+//       emailRedirectTo,
+//     },
+//   });
+
+//   if (error) throw error;
+//   return data;
+// }
+
+export async function resetPassword(email: string) {
+  const emailRedirectTo = getRedirectUrl({type: 'recovery'});
+  console.log('Reset password redirect URL:', emailRedirectTo);
+
+
+  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: emailRedirectTo,
+  })
+
+  if (error) throw error;
+
   return data;
 }

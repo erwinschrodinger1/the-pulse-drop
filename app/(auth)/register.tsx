@@ -41,7 +41,7 @@ export default function RegisterScreen() {
 
     router.push({
       pathname: '/(auth)/verify-email',
-      params: { fullName, email, password },
+      params: { type: 'signup', email },
     });
   };
 

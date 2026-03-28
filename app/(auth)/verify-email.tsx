@@ -10,24 +10,15 @@ import {
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Toast } from 'toastify-react-native';
-import { signUp } from '@/lib/supabase-auth';
+import { resendVerificationEmail } from '@/lib/supabase-auth';
 
 export default function VerifyEmailScreen() {
   const router = useRouter();
 
-  const params = useLocalSearchParams<{
-    fullName?: string;
-    email?: string;
-    password?: string;
+  const { type, email } = useLocalSearchParams<{
+    type: string;
+    email: string;
   }>();
-
-  const fullName = Array.isArray(params.fullName)
-    ? params.fullName[0]
-    : (params.fullName ?? '');
-  const email = Array.isArray(params.email) ? params.email[0] : (params.email ?? '');
-  const password = Array.isArray(params.password)
-    ? params.password[0]
-    : (params.password ?? '');
 
   const [seconds, setSeconds] = useState(60);
   const [isResending, setIsResending] = useState(false);
@@ -63,20 +54,20 @@ export default function VerifyEmailScreen() {
   const handleResend = async () => {
     if (resendDisabled) return;
 
-    if (!fullName || !email || !password) {
-      Toast.error('Missing signup details. Please sign up again.');
-      router.replace('/(auth)/signup');
+    if (!email) {
+      Toast.error('Missing email address. Please sign up again.');
+      router.replace('/(auth)/register');
       return;
     }
 
     try {
       setIsResending(true);
-      await signUp(fullName, email, password);
-      Toast.success('Confirmation email sent again');
+      await resendVerificationEmail(email, type as 'signup' | 'recovery');
+      Toast.success('New verification email sent!');
       setSeconds(60);
     } catch (error: unknown) {
       const message =
-        error instanceof Error ? error.message : 'Failed to resend confirmation email';
+        error instanceof Error ? error.message : 'Failed to resend verification email';
       Toast.error(message);
     } finally {
       setIsResending(false);
@@ -114,9 +105,10 @@ export default function VerifyEmailScreen() {
           </Text>
 
           <Text className="mt-3 px-4 text-center leading-6 text-gray-500">
-            We sent a confirmation link to your email address. Please open your inbox and
-            click the <Text className="font-semibold text-blue-600">Confirm Email</Text>{' '}
-            link to activate your Pulse Drop account.
+            We sent a confirmation link to your email address ({email}). Please open your
+            inbox and click the{' '}
+            <Text className="font-semibold text-blue-600">Confirm Email</Text> link to
+            activate your Pulse Drop account.
           </Text>
 
           {!!email && (

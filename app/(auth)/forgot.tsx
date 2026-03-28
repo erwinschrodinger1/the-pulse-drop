@@ -12,23 +12,34 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Toast } from 'toastify-react-native';
+import { resetPassword } from '@/lib/supabase-auth';
 
 export default function ForgotPasswordScreen() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [focus, setFocus] = useState<'email' | null>(null);
 
-  const handleSendOtp = () => {
+  const handleSendOtp = async () => {
     if (!email.trim()) {
       Toast.error('Please enter your email address');
       return;
     }
+
+    try {
+      const data = await resetPassword(email);
+      console.log('reset pass', data);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Failed to send OTP';
+      Toast.error(message);
+      return;
+    }
+
     // TODO: call backend to send OTP
     Toast.success('OTP sent to your email');
 
     router.push({
-      pathname: '/(auth)/otp',
-      params: { from: 'forgot', email },
+      pathname: '/(auth)/verify-email',
+      params: { type: 'recovery', email },
     });
   };
 
