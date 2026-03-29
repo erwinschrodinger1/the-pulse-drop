@@ -8,7 +8,7 @@ const STORAGE_HAS_ONBOARDED = 'pulseDrop.hasOnboarded';
 
 export default function AuthProvider({ children }: PropsWithChildren) {
   const [claims, setClaims] = useState<Record<string, any> | null>(null);
-  const [profile, setProfile] = useState<any>(null);
+  const [user, setUser] = useState<any>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [ready, setReady] = useState<boolean>(false);
@@ -65,7 +65,7 @@ export default function AuthProvider({ children }: PropsWithChildren) {
 
       if (!nextSession) {
         setClaims(null);
-        setProfile(null);
+        setUser(null);
         return;
       }
 
@@ -78,21 +78,18 @@ export default function AuthProvider({ children }: PropsWithChildren) {
     };
   }, []);
 
-  // Fetch the profile when user identity changes
+  // Fetch the user when user identity changes
   useEffect(() => {
     const fetchProfile = async () => {
       const userId = session?.user?.id ?? claims?.sub;
 
       if (userId) {
-        const { data } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', userId)
-          .single();
+        const { data, error } = await supabase.auth.getUser();
+        if (error) throw error;
 
-        setProfile(data);
+        setUser(data);
       } else {
-        setProfile(null);
+        setUser(null);
       }
     };
 
@@ -107,7 +104,7 @@ export default function AuthProvider({ children }: PropsWithChildren) {
   const logout = async () => {
     setSession(null);
     setClaims(null);
-    setProfile(null);
+    setUser(null);
 
     const { error } = await supabase.auth.signOut({ scope: 'local' });
     if (error) {
@@ -122,7 +119,7 @@ export default function AuthProvider({ children }: PropsWithChildren) {
       value={{
         claims,
         isLoading,
-        profile,
+        user,
         isLoggedIn,
         ready,
         hasOnboarded,

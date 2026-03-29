@@ -9,13 +9,13 @@ import { useAuthContext } from '@/hooks/use-auth-context';
 function Gate() {
   const router = useRouter();
   const segments = useSegments();
-  const { ready, hasOnboarded, isLoggedIn } = useAuthContext();
+  const { user, ready, hasOnboarded, isLoggedIn } = useAuthContext();
 
   useEffect(() => {
     if (!ready) return;
 
     const inAuthGroup = segments[0] === '(auth)';
-    const inAppGroup = segments[0] === '(app)';
+    //    const inAppGroup = segments[0] === '(app)';
     const inOnboardingGroup = segments[0] === '(onboarding)';
 
     // Not onboarded → onboarding
@@ -35,10 +35,16 @@ function Gate() {
     }
 
     // Logged in → app
-    if (!inAppGroup) {
-      router.replace('/(app)/(tabs)');
+    console.log('Already in app group user: ', user);
+
+    if (!user?.user?.user_metadata?.blood_group) {
+      console.log('Profile is missing blood group, redirecting to complete-profile');
+
+      router.replace('/(app)/complete-profile');
+      return;
     }
-  }, [ready, hasOnboarded, isLoggedIn, segments]);
+    router.replace('/(app)/(tabs)');
+  }, [user, ready, hasOnboarded, isLoggedIn]);
 
   return <Stack screenOptions={{ headerShown: false }} />;
 }

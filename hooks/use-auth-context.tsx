@@ -2,7 +2,7 @@ import { createContext, useContext } from 'react';
 
 export type AuthData = {
   claims?: Record<string, any> | null;
-  profile?: any | null;
+  user?: any | null;
   isLoading: boolean;
   isLoggedIn: boolean;
   ready: boolean;
@@ -13,13 +13,13 @@ export type AuthData = {
 
 export const AuthContext = createContext<AuthData>({
   claims: undefined,
-  profile: undefined,
+  user: undefined,
   isLoading: true,
   isLoggedIn: false,
   ready: false,
   hasOnboarded: false,
-  completeOnboarding: async () => {},
-  logout: async () => {},
+  completeOnboarding: async () => { },
+  logout: async () => { },
 });
 
 export const useAuthContext = () => useContext(AuthContext);
