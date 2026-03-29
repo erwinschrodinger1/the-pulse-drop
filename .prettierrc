@@ -1,0 +1,31 @@
+{
+  "printWidth": 90,
+  "tabWidth": 2,
+  "useTabs": false,
+
+  "semi": true,
+  "singleQuote": true,
+  "quoteProps": "as-needed",
+
+  "jsxSingleQuote": false,
+  "bracketSameLine": false,
+  "trailingComma": "all",
+
+  "arrowParens": "always",
+  "endOfLine": "auto",
+
+  "plugins": ["prettier-plugin-tailwindcss"],
+
+  "tailwindAttributes": ["className", "class"],
+
+  "tailwindFunctions": ["clsx", "cn"],
+
+  "overrides": [
+    {
+      "files": "*.json",
+      "options": {
+        "trailingComma": "none"
+      }
+    }
+  ]
+}
