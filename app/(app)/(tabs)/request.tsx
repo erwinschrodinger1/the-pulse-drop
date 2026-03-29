@@ -16,6 +16,7 @@ import { Asset } from 'expo-asset';
 import * as FileSystem from 'expo-file-system/legacy';
 import { LeafletView, AnimationType, MapMarker } from 'react-native-leaflet-view';
 import * as Location from 'expo-location';
+import { Ionicons } from '@expo/vector-icons';
 
 const DEFAULT_LOCATION = {
   lat: 27.715489,
@@ -131,7 +132,23 @@ export default function RequestPage() {
       {/* Title & toggle */}
       <View className="mb-4 flex-row items-center justify-between">
         <Text className="text-xl font-semibold">Requests</Text>
-        <ViewModeToggle value={mode} onChange={setMode} />
+        <ViewModeToggle
+          value={mode}
+          onChange={(value) => setMode(value as 'map' | 'list')}
+          options={[
+            {
+              key: 'map',
+              render: (active) => (
+                <Ionicons name="map" size={24} color={active ? '#FFFFFF' : '#000000'} />),
+            },
+            {
+              key: 'list',
+              render: (active) => (
+                <Ionicons name="list" size={24} color={active ? '#FFFFFF' : '#000000'} />
+              ),
+            },
+          ]}
+        />
       </View>
 
       {/* Switch view */}
