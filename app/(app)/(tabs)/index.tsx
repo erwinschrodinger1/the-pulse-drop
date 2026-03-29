@@ -3,8 +3,29 @@ import { View, Image, Text, ActivityIndicator, Pressable, Modal } from 'react-na
 import Entypo from '@expo/vector-icons/Entypo';
 import ElevatedContainer from '@/components/ElevatedContainer';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import { Link } from 'expo-router';
 import { ProgressChart } from 'react-native-chart-kit';
+import { supabase } from '@/lib/supabase';
+import { useAuthContext } from '@/hooks/use-auth-context';
+
+type UserProfile = {
+  fullName: string;
+  picture: string;
+  bloodGroup: string;
+  credits: number;
+  donations: number;
+  lastBloodDonated: string | null;
+};
+
+function getDaysSince(dateString: string | null) {
+  if (!dateString) return 0;
+
+  const donatedDate = new Date(dateString);
+  if (Number.isNaN(donatedDate.getTime())) return 0;
+
+  const now = new Date();
+  const diffMs = now.getTime() - donatedDate.getTime();
+  return Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24)));
+}
 
 export default function Home() {
   const chartConfig = {
@@ -19,11 +40,64 @@ export default function Home() {
     strokeWidth: 16,
   };
 
-  const screenWidth = Dimensions.get('window').width;
   const [showCreditInfo, setShowCreditInfo] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<UserProfile>({
+    fullName: 'John Doe',
+    picture: '',
+    bloodGroup: '--',
+    credits: 0,
+    donations: 0,
+    lastBloodDonated: null,
+  });
 
-  let daysSinceLast = 24;
-  let progress = Math.min(daysSinceLast / 90, 1); // assuming 56 days is the max for full ring
+  const { user, _ } = useAuthContext();
+
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        if (!user) {
+          return;
+        }
+
+        const metadata = user.user.user_metadata ?? {};
+
+        const fullName =
+          metadata.full_name || metadata.name || user.email?.split('@')[0] || 'User';
+
+        setProfile({
+          fullName,
+          picture: metadata.picture || '',
+          bloodGroup: metadata.blood_group || '--',
+          credits: Number(metadata.credits ?? 0),
+          donations: Number(metadata.donations ?? 0),
+          lastBloodDonated: metadata.last_blood_donated ?? null,
+        });
+      } catch (error) {
+        console.error('Failed to load user:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    void loadUser();
+  }, [user]);
+
+  const daysSinceLast = useMemo(
+    () => getDaysSince(profile.lastBloodDonated),
+    [profile.lastBloodDonated],
+  );
+
+  const progress = Math.min(daysSinceLast / 90, 1);
+
+  if (loading) {
+    return (
+      <View className="flex-1 items-center justify-center bg-white">
+        <ActivityIndicator size="large" color="#dc2626" />
+        <Text className="mt-3 text-gray-500">Loading profile...</Text>
+      </View>
+    );
+  }
 
   return (
     <View className="flex-1">
@@ -36,10 +110,13 @@ export default function Home() {
             resizeMode="contain"
           />
 
-          {/* Centered circular profile image */}
           <View className="absolute inset-0 items-center justify-center">
             <Image
-              source={require('@/assets/images/profile.jpg')}
+              source={
+                profile.picture
+                  ? { uri: profile.picture }
+                  : require('@/assets/images/profile.jpg')
+              }
               className="h-48 w-48 rounded-full border-[10px] border-white"
               resizeMode="cover"
             />
@@ -48,20 +125,29 @@ export default function Home() {
       </View>
 
       <ElevatedContainer className="mx-8 mt-6 flex">
-        <Link href={'/credit-detail'} className="mb-2 self-end">
+        <Pressable
+          onPress={() => {
+            console.log('Modal triggered');
+
+            setShowCreditInfo(true);
+          }}
+          className="mb-2 self-end"
+        >
           <FontAwesome5 name="info-circle" size={14} color="black" />
-        </Link>
+        </Pressable>
 
         <View className="w-full flex-row items-center justify-between">
-          <Text className="text-4xl font-bold text-red-600">A+ve</Text>
-          <Text className="text-xl font-semibold">32 donations</Text>
+          <Text className="text-4xl font-bold text-red-600">{profile.bloodGroup}</Text>
+          <Text className="text-xl font-semibold">{profile.donations} donations</Text>
         </View>
 
         <View className="w-full flex-row items-center justify-between">
-          <Text className="text-4xl font-bold">John Doe</Text>
-          <View className="flex-row align-bottom">
+          <Text className="text-4xl font-bold">{profile.fullName}</Text>
+          <View className="flex-row items-end">
             <Entypo name="drop" size={24} color="red" />
-            <Text className="text-xl font-semibold text-red-600">1200 credits</Text>
+            <Text className="text-xl font-semibold text-red-600">
+              {profile.credits} credits
+            </Text>
           </View>
         </View>
       </ElevatedContainer>
