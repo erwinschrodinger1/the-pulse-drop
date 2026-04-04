@@ -4,6 +4,7 @@ import { View, Text, Alert, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import ElevatedContainer from './ElevatedContainer';
 import { Button } from './Button';
+import { useTranslation } from 'react-i18next';
 
 type Urgency = 'High' | 'Medium' | 'Low';
 
@@ -33,16 +34,18 @@ type Props = {
 };
 
 export default function RequestCard({ className, request, onConfirm, onPress }: Props) {
+  const { t } = useTranslation();
+
   const handleConfirmPress = () => {
     if (!onConfirm) return;
 
     Alert.alert(
-      'Confirm request',
-      'Are you sure you want to confirm this blood donation request?',
+      t('requestCard.confirmDialog.title'),
+      t('requestCard.confirmDialog.message'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.actions.cancel'), style: 'cancel' },
         {
-          text: 'Confirm',
+          text: t('requestCard.confirmDialog.confirm'),
           style: 'default',
           onPress: () => onConfirm(),
         },
@@ -68,9 +71,13 @@ export default function RequestCard({ className, request, onConfirm, onPress }: 
 
             {typeof request.distanceKm === 'number' && (
               <View className="items-end">
-                <Text className="text-xs text-gray-400">Distance</Text>
+                <Text className="text-xs text-gray-400">
+                  {t('requestCard.fields.distance')}
+                </Text>
                 <Text className="text-sm font-semibold text-gray-800">
-                  {request.distanceKm.toFixed(1)} km
+                  {t('requestCard.distanceValue', {
+                    distance: request.distanceKm.toFixed(1),
+                  })}
                 </Text>
               </View>
             )}
@@ -84,7 +91,9 @@ export default function RequestCard({ className, request, onConfirm, onPress }: 
         <View className="space-y-2">
           {request.requestedAmount && (
             <View>
-              <Text className="text-xs text-gray-400">Requested amount</Text>
+              <Text className="text-xs text-gray-400">
+                {t('requestCard.fields.requestedAmount')}
+              </Text>
               <Text className="text-base font-semibold text-gray-800">
                 {request.requestedAmount}
               </Text>
@@ -93,7 +102,9 @@ export default function RequestCard({ className, request, onConfirm, onPress }: 
 
           {request.bloodGroup && (
             <View>
-              <Text className="text-xs text-gray-400">Blood group</Text>
+              <Text className="text-xs text-gray-400">
+                {t('requestCard.fields.bloodGroup')}
+              </Text>
               <Text className="text-base font-semibold text-red-600">
                 {request.bloodGroup}
               </Text>
@@ -102,7 +113,9 @@ export default function RequestCard({ className, request, onConfirm, onPress }: 
 
           {request.date && (
             <View>
-              <Text className="text-xs text-gray-400">Date</Text>
+              <Text className="text-xs text-gray-400">
+                {t('requestCard.fields.date')}
+              </Text>
               <Text className="text-base font-semibold text-gray-800">
                 {request.date}
               </Text>
@@ -111,7 +124,9 @@ export default function RequestCard({ className, request, onConfirm, onPress }: 
 
           {request.time && (
             <View>
-              <Text className="text-xs text-gray-400">Time</Text>
+              <Text className="text-xs text-gray-400">
+                {t('requestCard.fields.time')}
+              </Text>
               <Text className="text-base font-semibold text-gray-800">
                 {request.time}
               </Text>
@@ -120,7 +135,9 @@ export default function RequestCard({ className, request, onConfirm, onPress }: 
 
           {request.urgency && (
             <View className="mt-1">
-              <Text className="text-xs text-gray-400">Urgency</Text>
+              <Text className="text-xs text-gray-400">
+                {t('requestCard.fields.urgency')}
+              </Text>
               <Text
                 className={`text-sm font-semibold ${
                   request.urgency === 'High'
@@ -130,7 +147,7 @@ export default function RequestCard({ className, request, onConfirm, onPress }: 
                       : 'text-green-700'
                 }`}
               >
-                {request.urgency} urgency
+                {t('requestCard.urgencyValue', { urgency: request.urgency })}
               </Text>
             </View>
           )}
@@ -142,7 +159,7 @@ export default function RequestCard({ className, request, onConfirm, onPress }: 
             <Button
               className="rounded-full bg-blue-600 py-3"
               onPress={handleConfirmPress}
-              title="Confirm request"
+              title={t('requestCard.confirmButton')}
             ></Button>
           </View>
         )}

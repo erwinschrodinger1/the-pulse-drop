@@ -11,9 +11,11 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Toast } from 'toastify-react-native';
 import { resendVerificationEmail } from '@/lib/supabase-auth';
+import { useTranslation } from 'react-i18next';
 
 export default function VerifyEmailScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const { type, email } = useLocalSearchParams<{
     type: string;
@@ -43,19 +45,20 @@ export default function VerifyEmailScreen() {
   }, [seconds]);
 
   const countdownLabel = useMemo(
-    () => `Resend in 00:${seconds.toString().padStart(2, '0')}`,
+    () =>
+      t('auth.verifyEmail.resendIn', { seconds: seconds.toString().padStart(2, '0') }),
     [seconds],
   );
 
   const handleOpenMail = () => {
-    Toast.info('Open your email inbox and click the confirmation link');
+    Toast.info(t('auth.verifyEmail.success.openInbox'));
   };
 
   const handleResend = async () => {
     if (resendDisabled) return;
 
     if (!email) {
-      Toast.error('Missing email address. Please sign up again.');
+      Toast.error(t('auth.verifyEmail.errors.missingEmail'));
       router.replace('/(auth)/register');
       return;
     }
@@ -63,11 +66,13 @@ export default function VerifyEmailScreen() {
     try {
       setIsResending(true);
       await resendVerificationEmail(email, type as 'signup' | 'recovery');
-      Toast.success('New verification email sent!');
+      Toast.success(t('auth.verifyEmail.success.resendSent'));
       setSeconds(60);
     } catch (error: unknown) {
       const message =
-        error instanceof Error ? error.message : 'Failed to resend verification email';
+        error instanceof Error
+          ? error.message
+          : t('auth.verifyEmail.errors.resendFailed');
       Toast.error(message);
     } finally {
       setIsResending(false);
@@ -101,19 +106,20 @@ export default function VerifyEmailScreen() {
           </View>
 
           <Text className="text-center text-3xl font-semibold text-gray-900">
-            Verify your email
+            {t('auth.verifyEmail.title')}
           </Text>
 
           <Text className="mt-3 px-4 text-center leading-6 text-gray-500">
-            We sent a confirmation link to your email address ({email}). Please open your
-            inbox and click the{' '}
-            <Text className="font-semibold text-blue-600">Confirm Email</Text> link to
-            activate your Pulse Drop account.
+            {t('auth.verifyEmail.descriptionPrefix', { email })}{' '}
+            <Text className="font-semibold text-blue-600">
+              {t('auth.verifyEmail.confirmEmailLabel')}
+            </Text>{' '}
+            {t('auth.verifyEmail.descriptionSuffix')}
           </Text>
 
           {!!email && (
             <Text className="mt-3 text-center text-sm text-gray-400">
-              Sent to {email}
+              {t('auth.verifyEmail.sentTo', { email })}
             </Text>
           )}
 
@@ -122,11 +128,10 @@ export default function VerifyEmailScreen() {
               <Ionicons name="information-circle-outline" size={22} color="#2563EB" />
               <View className="ml-3 flex-1">
                 <Text className="font-semibold text-gray-800">
-                  Didn’t receive the email?
+                  {t('auth.verifyEmail.didNotReceive')}
                 </Text>
                 <Text className="mt-1 leading-5 text-gray-500">
-                  Check your spam folder or tap resend below. The confirmation email may
-                  take a minute to arrive.
+                  {t('auth.verifyEmail.didNotReceiveHint')}
                 </Text>
               </View>
             </View>
@@ -139,7 +144,7 @@ export default function VerifyEmailScreen() {
             <View className="flex-row items-center">
               <Ionicons name="mail-open-outline" size={18} color="#fff" />
               <Text className="ml-2 text-base font-semibold text-white">
-                I’ve checked my email
+                {t('auth.verifyEmail.checkedEmail')}
               </Text>
             </View>
           </Pressable>
@@ -165,18 +170,22 @@ export default function VerifyEmailScreen() {
                 }`}
               >
                 {isResending
-                  ? 'Sending...'
+                  ? t('auth.verifyEmail.sending')
                   : isCooldownActive
                     ? countdownLabel
-                    : 'Resend email'}
+                    : t('auth.verifyEmail.resendEmail')}
               </Text>
             </View>
           </Pressable>
 
           <View className="mt-6 flex-row justify-center">
-            <Text className="text-gray-500">Already verified? </Text>
+            <Text className="text-gray-500">
+              {t('auth.verifyEmail.alreadyVerified')}{' '}
+            </Text>
             <Pressable onPress={() => router.replace('/(auth)/login')} hitSlop={10}>
-              <Text className="font-semibold text-blue-600">Sign in</Text>
+              <Text className="font-semibold text-blue-600">
+                {t('common.actions.signIn')}
+              </Text>
             </Pressable>
           </View>
         </View>

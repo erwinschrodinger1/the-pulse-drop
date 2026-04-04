@@ -26,6 +26,7 @@ import {
 
 import ElevatedContainer from '@/components/ElevatedContainer';
 import { supabase } from '@/lib/supabase';
+import { useTranslation } from 'react-i18next';
 
 const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
@@ -36,7 +37,7 @@ const allCountries = getCountries().map((code) => ({
 }));
 
 function formatDate(date: Date | null) {
-  if (!date) return 'Select date';
+  if (!date) return null;
 
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
     2,
@@ -46,6 +47,7 @@ function formatDate(date: Date | null) {
 
 export default function CompleteProfile() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const [country, setCountry] = useState<CountryCode>('NP');
   const [showCountryModal, setShowCountryModal] = useState(false);
@@ -83,12 +85,18 @@ export default function CompleteProfile() {
 
   const handleSave = async () => {
     if (!phoneNumber.trim()) {
-      Alert.alert('Missing phone number', 'Please enter your phone number.');
+      Alert.alert(
+        t('completeProfile.errors.missingPhoneTitle'),
+        t('completeProfile.errors.missingPhoneMessage'),
+      );
       return;
     }
 
     if (!selectedBloodGroup) {
-      Alert.alert('Missing blood group', 'Please select your blood group.');
+      Alert.alert(
+        t('completeProfile.errors.missingBloodGroupTitle'),
+        t('completeProfile.errors.missingBloodGroupMessage'),
+      );
       return;
     }
 
@@ -97,7 +105,10 @@ export default function CompleteProfile() {
     const parsed = parsePhoneNumberFromString(fullPhone);
 
     if (!parsed || !parsed.isValid()) {
-      Alert.alert('Invalid phone number', 'Please enter a valid phone number.');
+      Alert.alert(
+        t('completeProfile.errors.invalidPhoneTitle'),
+        t('completeProfile.errors.invalidPhoneMessage'),
+      );
       return;
     }
 
@@ -109,7 +120,7 @@ export default function CompleteProfile() {
       } = await supabase.auth.getUser();
 
       if (!user) {
-        throw new Error('User not found.');
+        throw new Error(t('completeProfile.errors.userNotFound'));
       }
 
       const payload = {
@@ -126,7 +137,10 @@ export default function CompleteProfile() {
 
       router.replace('/(app)/(tabs)');
     } catch (err: any) {
-      Alert.alert('Save failed', err?.message ?? 'Something went wrong.');
+      Alert.alert(
+        t('completeProfile.errors.saveFailedTitle'),
+        err?.message ?? t('completeProfile.errors.saveFailedMessage'),
+      );
     } finally {
       setLoading(false);
     }
@@ -139,12 +153,14 @@ export default function CompleteProfile() {
       showsVerticalScrollIndicator={false}
     >
       <ElevatedContainer className="mx-8 mt-4 py-12">
-        <Text className="text-3xl font-bold text-black">Complete Profile</Text>
+        <Text className="text-3xl font-bold text-black">
+          {t('completeProfile.title')}
+        </Text>
 
         {/* PHONE INPUT */}
 
         <View className="mt-6">
-          <Text className="text-2xl font-bold">Phone Number</Text>
+          <Text className="text-2xl font-bold">{t('completeProfile.phoneNumber')}</Text>
 
           <View className="mt-5 flex-row items-center gap-2">
             {/* COUNTRY SELECTOR */}
@@ -161,7 +177,7 @@ export default function CompleteProfile() {
             <TextInput
               value={phoneNumber}
               onChangeText={setPhoneNumber}
-              placeholder="Enter phone number"
+              placeholder={t('completeProfile.phonePlaceholder')}
               keyboardType="phone-pad"
               className="flex-1 rounded-xl border-2 border-blue-400 bg-gray-100 px-4 py-4"
             />
@@ -172,7 +188,7 @@ export default function CompleteProfile() {
             <View className="mt-2 flex-row flex-wrap">
               {possibleCountries.map((c) => (
                 <Text key={c} className="mr-2 text-xs text-gray-500">
-                  Possible: {c}
+                  {t('completeProfile.possible', { country: c })}
                 </Text>
               ))}
             </View>
@@ -208,7 +224,9 @@ export default function CompleteProfile() {
             onPress={() => setShowDatePicker(true)}
             className="flex-row items-center justify-between rounded-xl border-2 border-blue-400 bg-gray-100 px-4 py-4"
           >
-            <Text>{lastDonated ? formattedDate : 'Select date'}</Text>
+            <Text>{lastDonated ? formattedDate : t('completeProfile.selectDate')}</Text>
+
+            <FontAwesome5 name="calendar-alt" size={18} color="#6b7280" />
 
             <FontAwesome5 name="calendar-alt" size={18} color="#6b7280" />
           </Pressable>
@@ -233,7 +251,7 @@ export default function CompleteProfile() {
           }`}
         >
           <Text className="font-semibold text-white">
-            {loading ? 'Saving...' : 'Continue'}
+            {loading ? t('completeProfile.saving') : t('common.actions.continue')}
           </Text>
         </Pressable>
       </ElevatedContainer>

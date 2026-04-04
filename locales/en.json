@@ -1,0 +1,484 @@
+{
+  "common": {
+    "actions": {
+      "signIn": "Sign in",
+      "signUp": "Sign up",
+      "send": "Send",
+      "resend": "Resend",
+      "cancel": "Cancel",
+      "continue": "Continue"
+    },
+    "oauth": {
+      "orContinueWith": "Or continue with",
+      "google": "Google",
+      "facebook": "Facebook"
+    },
+    "errors": {
+      "generic": "Something went wrong"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Sign In",
+      "subtitle": "Enter valid user name & password to continue",
+      "usernamePlaceholder": "User name",
+      "passwordPlaceholder": "Password",
+      "forgotPassword": "Forgot password",
+      "loginButton": "Login",
+      "noAccount": "Don’t have an account?",
+      "errors": {
+        "missingCredentials": "Please enter both username and password",
+        "failed": "Login failed",
+        "oauthFailed": "OAuth login failed"
+      }
+    },
+    "register": {
+      "title": "Create Account",
+      "subtitle": "Enter your details to continue",
+      "fullNamePlaceholder": "Full name",
+      "emailPlaceholder": "Email",
+      "passwordPlaceholder": "Password",
+      "submitButton": "Create Account",
+      "haveAccount": "Already have an account?",
+      "errors": {
+        "missingFields": "Please fill in full name, email and password",
+        "failed": "Registration failed"
+      }
+    },
+    "forgot": {
+      "title": "Forget Password",
+      "subtitle": "Don’t worry it happens. Please enter the address associated with your account",
+      "emailPlaceholder": "Email address",
+      "submitButton": "Send OTP",
+      "rememberPassword": "You remember your password?",
+      "errors": {
+        "missingEmail": "Please enter your email address",
+        "sendOtpFailed": "Failed to send OTP"
+      },
+      "success": {
+        "otpSent": "OTP sent to your email"
+      }
+    },
+    "verifyEmail": {
+      "title": "Verify your email",
+      "descriptionPrefix": "We sent a confirmation link to your email address ({{email}}). Please open your inbox and click the",
+      "confirmEmailLabel": "Confirm Email",
+      "descriptionSuffix": "link to activate your Pulse Drop account.",
+      "sentTo": "Sent to {{email}}",
+      "didNotReceive": "Didn’t receive the email?",
+      "didNotReceiveHint": "Check your spam folder or tap resend below. The confirmation email may take a minute to arrive.",
+      "checkedEmail": "I’ve checked my email",
+      "sending": "Sending...",
+      "resendEmail": "Resend email",
+      "resendIn": "Resend in 00:{{seconds}}",
+      "alreadyVerified": "Already verified?",
+      "errors": {
+        "missingEmail": "Missing email address. Please sign up again.",
+        "resendFailed": "Failed to resend verification email"
+      },
+      "success": {
+        "resendSent": "New verification email sent!",
+        "openInbox": "Open your email inbox and click the confirmation link"
+      }
+    },
+    "updatePassword": {
+      "title": "Update Password",
+      "subtitle": "Enter your new password for {{email}}",
+      "newPasswordPlaceholder": "New password",
+      "confirmPasswordPlaceholder": "Confirm password",
+      "submitButton": "Update Password",
+      "rememberPassword": "Remember your password?",
+      "checkingSession": "Verifying reset link…",
+      "errors": {
+        "expiredSession": "Password reset session expired. Please request a new link.",
+        "sessionCheckFailed": "Unable to verify reset session.",
+        "missingFields": "Please fill in both password fields",
+        "passwordTooShort": "Password must be at least 6 characters",
+        "passwordMismatch": "Passwords do not match",
+        "updateFailed": "Failed to update password"
+      },
+      "success": {
+        "passwordUpdated": "Password updated successfully! Please sign in."
+      }
+    },
+    "callback": {
+      "loading": "Completing sign in…",
+      "errors": {
+        "invalidLink": "Authentication link is invalid or expired.",
+        "recoveryInvalid": "Recovery link is invalid or incomplete.",
+        "recoveryMissingSession": "Recovery session missing. Please use the reset link again.",
+        "generic": "Something went wrong while completing authentication."
+      },
+      "success": {
+        "emailConfirmedSignIn": "Email confirmed. Please sign in.",
+        "recoveryReady": "Link verified. Set your new password.",
+        "emailVerified": "Email verified successfully!",
+        "emailVerifiedSignIn": "Email verified successfully. Please sign in."
+      }
+    }
+  },
+  "onboarding": {
+    "skip": "Skip",
+    "next": "Next",
+    "getStarted": "Get Started",
+    "alreadyHaveAccount": "Already have an account?",
+    "slides": {
+      "s1": {
+        "title": "Fresh Blood, Real Impact",
+        "desc": "See verified requests, hospital details, and required units. Every drop counts, every donor saves a life."
+      },
+      "s2": {
+        "title": "Blood When You Need It",
+        "desc": "Find blood quickly through real-time availability and nearby donors. No delays, no panic, just fast and reliable help."
+      },
+      "s3": {
+        "title": "Donate Blood, Get Rewarded",
+        "desc": "Build Pulse Score. Track donations and unlock benefits like health & insurance perks"
+      }
+    }
+  },
+  "otp": {
+    "title": "Verify OTP",
+    "subtitle": "Enter the 6-digit code we sent to your email.",
+    "verify": "Verify",
+    "wrongEmail": "Wrong email?",
+    "change": "Change",
+    "didNotReceive": "Didn’t receive code?",
+    "resendOtp": "Resend OTP",
+    "resendIn": "Resend in {{seconds}}s",
+    "errors": {
+      "missingOtp": "Please enter the 6-digit OTP"
+    },
+    "success": {
+      "verified": "OTP verified",
+      "resent": "OTP resent"
+    }
+  },
+  "completeProfile": {
+    "title": "Complete Profile",
+    "phoneNumber": "Phone Number",
+    "phonePlaceholder": "Enter phone number",
+    "possible": "Possible: {{country}}",
+    "selectDate": "Select date",
+    "saving": "Saving...",
+    "errors": {
+      "missingPhoneTitle": "Missing phone number",
+      "missingPhoneMessage": "Please enter your phone number.",
+      "missingBloodGroupTitle": "Missing blood group",
+      "missingBloodGroupMessage": "Please select your blood group.",
+      "invalidPhoneTitle": "Invalid phone number",
+      "invalidPhoneMessage": "Please enter a valid phone number.",
+      "saveFailedTitle": "Save failed",
+      "saveFailedMessage": "Something went wrong.",
+      "userNotFound": "User not found."
+    }
+  },
+  "home": {
+    "loading": "Loading profile...",
+    "donationProgress": "Donation Progress",
+    "sinceLastDonation": "Since last donation",
+    "daysToEligible": "Keep up the great work! You're just {{days}} days away from being eligible to donate again.",
+    "noDonationDate": "You have not added a donation date yet.",
+    "credits": "credits",
+    "donations": "{{count}} donations",
+    "creditScore": "Credit Score",
+    "creditInfo": {
+      "intro": "Your Pulse Drop Credit Score represents your trust, reliability, and health readiness inside the community.\n\nIt increases when you:",
+      "increase1": "• Donate blood on time at verified centers",
+      "increase2": "• Maintain a healthy donor profile",
+      "increase3": "• Respond quickly to donation requests",
+      "increase4": "• Complete identity & health verification",
+      "unlocks": "A higher score unlocks:",
+      "unlock1": "• Lower-cost health & life insurance",
+      "unlock2": "• Faster approval for emergency blood requests",
+      "unlock3": "• Access to exclusive donor benefits",
+      "outro": "The more consistent and reliable you are, the stronger your score becomes — helping you, your family, and the entire Pulse Drop network stay protected."
+    }
+  },
+  "request": {
+    "title": "Requests",
+    "yourLocation": "Your Location",
+    "idPrefix": "ID",
+    "requested": "Requested",
+    "bloodGroup": "Blood group",
+    "requestedOn": "Requested on",
+    "requestedOnAt": "{{date}} at {{time}}",
+    "urgency": "Urgency",
+    "documents": "Documents",
+    "loadingMap": "Loading map...",
+    "mapLoadErrorTitle": "Error loading map"
+  },
+  "history": {
+    "title": "History",
+    "addManualEntry": "Add Manual Entry",
+    "donationTab": "Donation",
+    "requestTab": "Request",
+    "noDonationTitle": "No donation history yet",
+    "noDonationSubtitle": "Add your first donation manually to start tracking your record.",
+    "noRequestTitle": "No request history yet",
+    "noRequestSubtitle": "Your past blood requests will appear here.",
+    "donated": "Donated",
+    "requested": "Requested",
+    "bloodGroup": "Blood group",
+    "amount": "Amount",
+    "notes": "Notes",
+    "addDonationEntry": "Add Donation Entry",
+    "donationDate": "Donation Date",
+    "location": "Location",
+    "bloodGroupField": "Blood Group",
+    "amountField": "Amount",
+    "notesField": "Notes",
+    "saveEntry": "Save Entry",
+    "selectDate": "Select date",
+    "placeholders": {
+      "center": "Enter donation center",
+      "bloodGroup": "e.g. A+",
+      "amount": "e.g. 1 pint",
+      "notes": "Optional notes"
+    },
+    "errors": {
+      "missingDateTitle": "Missing date",
+      "missingDateMessage": "Please select the donation date.",
+      "missingLocationTitle": "Missing location",
+      "missingLocationMessage": "Please enter donation location.",
+      "missingBloodGroupTitle": "Missing blood group",
+      "missingBloodGroupMessage": "Please enter blood group."
+    }
+  },
+  "profile": {
+    "loading": "Loading profile...",
+    "title": "Edit Profile",
+    "subtitle": "Update your personal and donor information.",
+    "pictureTitle": "Profile Picture",
+    "uploadingImage": "Uploading image...",
+    "selectFromDevice": "Select from device",
+    "takePicture": "Take picture",
+    "personalInfo": "Personal Info",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Enter your full name",
+    "bloodGroupTitle": "Blood Group",
+    "bloodGroupSubtitle": "Select the blood group that matches your profile.",
+    "lastDonation": "Last Donation",
+    "selectDate": "Select date",
+    "lastDonationPrompt": "When did you last donate?",
+    "lastDonationHint": "Leave it empty if you have never donated before.",
+    "saveChanges": "Save Changes",
+    "saving": "Saving...",
+    "permissions": {
+      "neededTitle": "Permission needed",
+      "libraryMessage": "Please allow photo library access.",
+      "cameraMessage": "Please allow camera access."
+    },
+    "errors": {
+      "title": "Error",
+      "loadFailed": "Could not load profile.",
+      "uploadFailedTitle": "Upload failed",
+      "uploadFailed": "Could not upload image.",
+      "missingNameTitle": "Missing name",
+      "missingNameMessage": "Please enter your full name.",
+      "missingBloodGroupTitle": "Missing blood group",
+      "missingBloodGroupMessage": "Please select your blood group.",
+      "saveFailedTitle": "Save failed",
+      "saveFailed": "Something went wrong."
+    },
+    "success": {
+      "title": "Success",
+      "updated": "Your profile has been updated."
+    }
+  },
+  "kyc": {
+    "loading": "Loading KYC...",
+    "title": "Fill Up KYC",
+    "subtitle": "Verify your identity to unlock more trust and safety features.",
+    "sections": {
+      "personal": "Personal Details",
+      "emergency": "Emergency Contact",
+      "documents": "Verification Documents"
+    },
+    "fields": {
+      "fullName": "Full Name",
+      "dob": "Date of Birth",
+      "gender": "Gender",
+      "phoneNumber": "Phone Number",
+      "address": "Address",
+      "idNumber": "Citizenship / ID Number",
+      "name": "Name"
+    },
+    "placeholders": {
+      "fullName": "Enter your full name",
+      "dob": "Select date of birth",
+      "gender": "Enter gender",
+      "phone": "Enter phone number",
+      "address": "Enter your address",
+      "idNumber": "Enter ID number",
+      "emergencyName": "Enter emergency contact name",
+      "emergencyPhone": "Enter emergency contact number"
+    },
+    "documents": {
+      "hint": "Upload clear images for faster verification.",
+      "idFront": "ID Front",
+      "idBack": "ID Back",
+      "selfie": "Selfie Photo",
+      "none": "No file selected",
+      "select": "Select from device",
+      "camera": "Take picture",
+      "uploading": "Uploading image..."
+    },
+    "actions": {
+      "submit": "Submit KYC",
+      "submitting": "Submitting..."
+    },
+    "permissions": {
+      "neededTitle": "Permission needed",
+      "cameraMessage": "Please allow camera access.",
+      "libraryMessage": "Please allow photo library access."
+    },
+    "errors": {
+      "title": "Error",
+      "loadFailed": "Could not load KYC info.",
+      "uploadFailedTitle": "Upload failed",
+      "uploadFailed": "Could not upload image.",
+      "saveFailedTitle": "Save failed",
+      "saveFailed": "Something went wrong.",
+      "missingNameTitle": "Missing name",
+      "missingNameMessage": "Please enter your full name.",
+      "missingDobTitle": "Missing date of birth",
+      "missingDobMessage": "Please select your date of birth.",
+      "missingPhoneTitle": "Missing phone number",
+      "missingPhoneMessage": "Please enter your phone number.",
+      "missingAddressTitle": "Missing address",
+      "missingAddressMessage": "Please enter your address.",
+      "missingIdTitle": "Missing ID number",
+      "missingIdMessage": "Please enter your citizenship or ID number.",
+      "missingDocumentsTitle": "Missing documents",
+      "missingDocumentsMessage": "Please upload ID front, ID back, and a selfie."
+    },
+    "success": {
+      "title": "Success",
+      "submitted": "Your KYC has been submitted."
+    }
+  },
+  "settings": {
+    "loading": "Loading settings...",
+    "title": "Settings",
+    "subtitle": "Manage preferences, privacy, verification, and support.",
+    "saving": "Saving changes…",
+    "sections": {
+      "verification": "Verification",
+      "localization": "Localization",
+      "notifications": "Notifications",
+      "privacySafety": "Privacy & Safety",
+      "donationPreferences": "Donation Preferences",
+      "creditsTrust": "Credits & Trust",
+      "supportLegal": "Support & Legal",
+      "account": "Account"
+    },
+    "verification": {
+      "fillKycTitle": "Fill Up KYC",
+      "fillKycSubtitle": "Verify your identity and unlock more trust features",
+      "status": {
+        "verified": "Verified",
+        "rejected": "Rejected",
+        "pending": "Pending"
+      }
+    },
+    "localization": {
+      "languageTitle": "Language",
+      "languageMessage": "Choose your preferred app language",
+      "english": "English",
+      "nepali": "Nepali"
+    },
+    "notifications": {
+      "emergencyTitle": "Emergency Blood Requests",
+      "emergencySubtitle": "Get alerts for urgent blood needs",
+      "nearbyTitle": "Nearby Requests",
+      "nearbySubtitle": "Receive alerts near your location",
+      "donationRemindersTitle": "Donation Reminders",
+      "donationRemindersSubtitle": "Reminders to keep your donation schedule on track",
+      "eligibilityRemindersTitle": "Eligibility Reminders",
+      "eligibilityRemindersSubtitle": "Get notified when you can donate again"
+    },
+    "privacy": {
+      "shareLocationTitle": "Share Location",
+      "shareLocationSubtitle": "Used for nearby requests and centers",
+      "hospitalContactTitle": "Allow Hospitals to Contact Me",
+      "hospitalContactSubtitle": "Let verified centers reach you for urgent needs"
+    },
+    "preferences": {
+      "centersTitle": "Preferred Donation Centers",
+      "centersSubtitle": "Choose centers you trust most",
+      "defaultViewTitle": "Default View",
+      "defaultViewSubtitle": "Choose your preferred request browsing mode",
+      "defaultViewMessage": "Choose your preferred view.",
+      "map": "Map",
+      "list": "List"
+    },
+    "credits": {
+      "detailsTitle": "Credit Score Details",
+      "detailsSubtitle": "See how trust and rewards work"
+    },
+    "support": {
+      "helpCenter": "Help Center",
+      "contactSupport": "Contact Support",
+      "privacyPolicy": "Privacy Policy",
+      "termsAndConditions": "Terms & Conditions",
+      "aboutApp": "About App",
+      "version": "Version {{version}}"
+    },
+    "account": {
+      "logout": "Logout",
+      "delete": "Delete Account",
+      "deleteTitle": "Delete Account",
+      "deleteMessage": "This should call a secure backend or admin flow. Do not delete accounts directly from the client with elevated privileges.",
+      "deleteSubtitle": "Permanently remove your account and data"
+    },
+    "alert": {
+      "errorTitle": "Error",
+      "couldNotLoad": "Could not load settings.",
+      "updateFailedTitle": "Update failed",
+      "couldNotSave": "Could not save setting.",
+      "logoutFailedTitle": "Logout failed",
+      "couldNotLogout": "Could not log out."
+    },
+    "common": {
+      "comingSoon": "Coming soon"
+    }
+  },
+  "bloodGroupPicker": {
+    "bloodGroup": "Blood Group"
+  },
+  "swipeConfirmButton": {
+    "actions": {
+      "swipeToConfirm": "Swipe to confirm"
+    }
+  },
+  "locationPicker": {
+    "locationTitle": "Location",
+    "useMyLocation": "Use my location",
+    "cityPlaceholder": "City (e.g., Kathmandu)",
+    "areaPlaceholder": "Area (e.g., Baneshwor)"
+  },
+  "requestCard": {
+    "distanceValue": "{{distance}} km",
+    "urgencyValue": "{{urgency}} urgency",
+    "confirmButton": "Confirm request",
+    "fields": {
+      "distance": "Distance",
+      "requestedAmount": "Requested amount",
+      "bloodGroup": "Blood group",
+      "date": "Date",
+      "time": "Time",
+      "urgency": "Urgency"
+    },
+    "confirmDialog": {
+      "title": "Confirm request",
+      "message": "Are you sure you want to confirm this blood donation request?",
+      "confirm": "Confirm"
+    }
+  },
+  "notFound": {
+    "title": "Oops!",
+    "message": "This screen doesn't exist.",
+    "goHome": "Go to home screen!"
+  }
+}

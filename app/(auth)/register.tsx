@@ -14,9 +14,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Toast } from 'toastify-react-native';
 import { signUp } from '@/lib/supabase-auth';
+import { useTranslation } from 'react-i18next';
 
 export default function RegisterScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -27,14 +29,15 @@ export default function RegisterScreen() {
 
   const handleRegister = async () => {
     if (!fullName.trim() || !email.trim() || !password.trim()) {
-      Toast.error('Please fill in full name, email and password');
+      Toast.error(t('auth.register.errors.missingFields'));
       return;
     }
 
     try {
       await signUp(fullName, email, password);
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Registration failed';
+      const message =
+        error instanceof Error ? error.message : t('auth.register.errors.failed');
       Toast.error(message);
       return;
     }
@@ -71,10 +74,10 @@ export default function RegisterScreen() {
 
         {/* Title */}
         <Text className="text-center text-3xl font-semibold text-gray-900">
-          Create Account
+          {t('auth.register.title')}
         </Text>
         <Text className="mb-6 mt-2 text-center leading-5 text-gray-500">
-          Enter your details to continue
+          {t('auth.register.subtitle')}
         </Text>
 
         {/* Full name */}
@@ -83,7 +86,7 @@ export default function RegisterScreen() {
           <TextInput
             value={fullName}
             onChangeText={setFullName}
-            placeholder="Full name"
+            placeholder={t('auth.register.fullNamePlaceholder')}
             placeholderTextColor="#9CA3AF"
             className="ml-3 flex-1 text-gray-900"
             onFocus={() => setFocus('name')}
@@ -100,7 +103,7 @@ export default function RegisterScreen() {
           <TextInput
             value={email}
             onChangeText={setEmail}
-            placeholder="Email"
+            placeholder={t('auth.register.emailPlaceholder')}
             placeholderTextColor="#9CA3AF"
             className="ml-3 flex-1 text-gray-900"
             keyboardType="email-address"
@@ -119,7 +122,7 @@ export default function RegisterScreen() {
           <TextInput
             value={password}
             onChangeText={setPassword}
-            placeholder="Password"
+            placeholder={t('auth.register.passwordPlaceholder')}
             placeholderTextColor="#9CA3AF"
             secureTextEntry={secure}
             className="ml-3 flex-1 text-gray-900"
@@ -141,14 +144,18 @@ export default function RegisterScreen() {
           onPress={handleRegister}
           className="mt-6 h-12 items-center justify-center rounded-2xl bg-blue-600"
         >
-          <Text className="text-base font-semibold text-white">Create Account</Text>
+          <Text className="text-base font-semibold text-white">
+            {t('auth.register.submitButton')}
+          </Text>
         </Pressable>
 
         {/* Link to login */}
         <View className="mt-6 flex-row justify-center">
-          <Text className="text-gray-500">Already have an account? </Text>
+          <Text className="text-gray-500">{t('auth.register.haveAccount')} </Text>
           <Pressable onPress={() => router.push('/(auth)/login')} hitSlop={10}>
-            <Text className="font-semibold text-blue-600">Sign in</Text>
+            <Text className="font-semibold text-blue-600">
+              {t('common.actions.signIn')}
+            </Text>
           </Pressable>
         </View>
       </ScrollView>

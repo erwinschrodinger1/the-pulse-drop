@@ -17,6 +17,7 @@ import * as FileSystem from 'expo-file-system/legacy';
 import { LeafletView, AnimationType } from 'react-native-leaflet-view';
 import * as Location from 'expo-location';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 const DEFAULT_LOCATION = {
   lat: 27.715489,
@@ -24,6 +25,7 @@ const DEFAULT_LOCATION = {
 };
 
 export default function RequestPage() {
+  const { t } = useTranslation();
   const [status, requestPermission] = Location.useBackgroundPermissions();
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
 
@@ -92,7 +94,7 @@ export default function RequestPage() {
 
         if (mounted) setWebViewContent(htmlContent);
       } catch (err) {
-        Alert.alert('Error loading map', JSON.stringify(err));
+        Alert.alert(t('request.mapLoadErrorTitle'), JSON.stringify(err));
         console.error(err);
       }
     };
@@ -123,6 +125,7 @@ export default function RequestPage() {
     return (
       <View className="flex-1 items-center justify-center">
         <ActivityIndicator size="large" />
+        <Text className="mt-2 text-gray-500">{t('request.loadingMap')}</Text>
       </View>
     );
   }
@@ -131,7 +134,7 @@ export default function RequestPage() {
     <View className="mx-4 flex-1 pt-4">
       {/* Title & toggle */}
       <View className="mb-4 flex-row items-center justify-between">
-        <Text className="text-xl font-semibold">Requests</Text>
+        <Text className="text-xl font-semibold">{t('request.title')}</Text>
         <ViewModeToggle
           value={mode}
           onChange={(value) => setMode(value as 'map' | 'list')}
@@ -160,7 +163,7 @@ export default function RequestPage() {
             source={{ html: webViewContent }}
             mapMarkers={[]}
             ownPositionMarker={{
-              title: 'Your Location',
+              title: t('request.yourLocation'),
               animation: { type: AnimationType.WAGGLE, duration: 999999 },
               icon: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
               size: {
@@ -208,7 +211,7 @@ export default function RequestPage() {
                           {selectedRequest.title}
                         </Text>
                         <Text className="text-xs text-gray-400">
-                          ID: {selectedRequest.id}
+                          {t('request.idPrefix')}: {selectedRequest.id}
                         </Text>
                       </View>
                       <Text className="mt-1 text-gray-600">
@@ -222,28 +225,37 @@ export default function RequestPage() {
                     <View className="mb-3 space-y-2">
                       {selectedRequest.requestedAmount && (
                         <Text className="text-sm text-gray-700">
-                          <Text className="font-semibold">Requested: </Text>
+                          <Text className="font-semibold">
+                            {t('request.requested')}:{' '}
+                          </Text>
                           {selectedRequest.requestedAmount}
                         </Text>
                       )}
 
                       {selectedRequest.bloodGroup && (
                         <Text className="text-sm text-gray-700">
-                          <Text className="font-semibold">Blood group: </Text>
+                          <Text className="font-semibold">
+                            {t('request.bloodGroup')}:{' '}
+                          </Text>
                           {selectedRequest.bloodGroup}
                         </Text>
                       )}
 
                       {selectedRequest.date && (
                         <Text className="text-sm text-gray-700">
-                          <Text className="font-semibold">Requested on: </Text>
-                          {selectedRequest.date} at {selectedRequest.time}
+                          <Text className="font-semibold">
+                            {t('request.requestedOn')}:{' '}
+                          </Text>
+                          {t('request.requestedOnAt', {
+                            date: selectedRequest.date,
+                            time: selectedRequest.time,
+                          })}
                         </Text>
                       )}
 
                       {selectedRequest.urgency && (
                         <Text className="text-sm text-gray-700">
-                          <Text className="font-semibold">Urgency: </Text>
+                          <Text className="font-semibold">{t('request.urgency')}: </Text>
                           {selectedRequest.urgency}
                         </Text>
                       )}
@@ -254,7 +266,7 @@ export default function RequestPage() {
                       selectedRequest.documents.length > 0 && (
                         <View className="mt-2">
                           <Text className="mb-2 text-sm font-semibold text-gray-900">
-                            Documents
+                            {t('request.documents')}
                           </Text>
                           {selectedRequest.documents.map((doc) => (
                             <View key={doc.id} className="mb-3">
