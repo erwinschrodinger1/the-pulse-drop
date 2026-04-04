@@ -13,15 +13,17 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Toast } from 'toastify-react-native';
 import { resetPassword } from '@/lib/supabase-auth';
+import { useTranslation } from 'react-i18next';
 
 export default function ForgotPasswordScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [focus, setFocus] = useState<'email' | null>(null);
 
   const handleSendOtp = async () => {
     if (!email.trim()) {
-      Toast.error('Please enter your email address');
+      Toast.error(t('auth.forgot.errors.missingEmail'));
       return;
     }
 
@@ -29,13 +31,14 @@ export default function ForgotPasswordScreen() {
       const data = await resetPassword(email);
       console.log('reset pass', data);
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Failed to send OTP';
+      const message =
+        error instanceof Error ? error.message : t('auth.forgot.errors.sendOtpFailed');
       Toast.error(message);
       return;
     }
 
     // TODO: call backend to send OTP
-    Toast.success('OTP sent to your email');
+    Toast.success(t('auth.forgot.success.otpSent'));
 
     router.push({
       pathname: '/(auth)/verify-email',
@@ -73,11 +76,11 @@ export default function ForgotPasswordScreen() {
           </View>
 
           <Text className="text-center text-2xl font-semibold text-gray-900">
-            Forget Password
+            {t('auth.forgot.title')}
           </Text>
 
           <Text className="mb-6 mt-2 px-2 text-center leading-5 text-gray-500">
-            Don’t worry it happens. Please enter the address associated with your account
+            {t('auth.forgot.subtitle')}
           </Text>
 
           {/* Email input */}
@@ -88,7 +91,7 @@ export default function ForgotPasswordScreen() {
             <TextInput
               value={email}
               onChangeText={setEmail}
-              placeholder="Email address"
+              placeholder={t('auth.forgot.emailPlaceholder')}
               placeholderTextColor="#9CA3AF"
               keyboardType="email-address"
               autoCapitalize="none"
@@ -104,13 +107,17 @@ export default function ForgotPasswordScreen() {
             onPress={handleSendOtp}
             className="mt-6 h-12 items-center justify-center rounded-2xl bg-blue-600"
           >
-            <Text className="text-base font-semibold text-white">Send OTP</Text>
+            <Text className="text-base font-semibold text-white">
+              {t('auth.forgot.submitButton')}
+            </Text>
           </Pressable>
 
           <View className="mt-8 flex-row justify-center">
-            <Text className="text-gray-500">You remember your password? </Text>
+            <Text className="text-gray-500">{t('auth.forgot.rememberPassword')} </Text>
             <Pressable onPress={() => router.push('/(auth)/login')} hitSlop={10}>
-              <Text className="font-semibold text-blue-600">Sign in</Text>
+              <Text className="font-semibold text-blue-600">
+                {t('common.actions.signIn')}
+              </Text>
             </Pressable>
           </View>
         </View>

@@ -11,9 +11,11 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Toast } from 'toastify-react-native';
+import { useTranslation } from 'react-i18next';
 
 export default function OtpScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const [digits, setDigits] = useState(['', '', '', '', '', '']);
   const inputsRef = useRef<(TextInput | null)[]>([]);
@@ -68,18 +70,18 @@ export default function OtpScreen() {
 
   const handleVerify = () => {
     if (!canVerify) {
-      Toast.error('Please enter the 6-digit OTP');
+      Toast.error(t('otp.errors.missingOtp'));
       return;
     }
     // TODO: verify OTP with backend
-    Toast.success('OTP verified');
+    Toast.success(t('otp.success.verified'));
     router.push('/(auth)/reset-password');
   };
 
   const handleResend = () => {
     if (seconds > 0) return;
     // TODO: call backend resend OTP
-    Toast.success('OTP resent');
+    Toast.success(t('otp.success.resent'));
     setSeconds(30);
   };
 
@@ -110,11 +112,11 @@ export default function OtpScreen() {
           </View>
 
           <Text className="text-center text-2xl font-semibold text-gray-900">
-            Verify OTP
+            {t('otp.title')}
           </Text>
 
           <Text className="mb-6 mt-2 px-2 text-center leading-5 text-gray-500">
-            Enter the 6-digit code we sent to your email.
+            {t('otp.subtitle')}
           </Text>
 
           {/* OTP Boxes */}
@@ -139,12 +141,12 @@ export default function OtpScreen() {
 
           {/* Resend */}
           <View className="mt-5 flex-row justify-center">
-            <Text className="text-gray-500">Didn’t receive code? </Text>
+            <Text className="text-gray-500">{t('otp.didNotReceive')} </Text>
             <Pressable onPress={handleResend} disabled={seconds > 0} hitSlop={10}>
               <Text
                 className={`font-semibold ${seconds > 0 ? 'text-gray-400' : 'text-blue-600'}`}
               >
-                {seconds > 0 ? `Resend in ${seconds}s` : 'Resend OTP'}
+                {seconds > 0 ? t('otp.resendIn', { seconds }) : t('otp.resendOtp')}
               </Text>
             </Pressable>
           </View>
@@ -157,14 +159,14 @@ export default function OtpScreen() {
             }`}
             disabled={!canVerify}
           >
-            <Text className="text-base font-semibold text-white">Verify</Text>
+            <Text className="text-base font-semibold text-white">{t('otp.verify')}</Text>
           </Pressable>
 
           {from === 'signup' ? null : (
             <View className="mt-8 flex-row justify-center">
-              <Text className="text-gray-500">Wrong email? </Text>
+              <Text className="text-gray-500">{t('otp.wrongEmail')} </Text>
               <Pressable onPress={() => router.push('/(auth)/forgot')} hitSlop={10}>
-                <Text className="font-semibold text-blue-600">Change</Text>
+                <Text className="font-semibold text-blue-600">{t('otp.change')}</Text>
               </Pressable>
             </View>
           )}

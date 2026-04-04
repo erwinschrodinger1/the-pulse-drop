@@ -5,6 +5,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import ToastManager from 'toastify-react-native';
 import AuthProvider from '@/providers/AuthProvider';
 import { useAuthContext } from '@/hooks/use-auth-context';
+import '@/lib/i18n';
 
 function Gate() {
   const router = useRouter();

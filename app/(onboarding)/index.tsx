@@ -13,39 +13,33 @@ import {
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuthContext } from '@/hooks/use-auth-context';
+import { useTranslation } from 'react-i18next';
 
 const { width } = Dimensions.get('window');
 
 type Slide = {
   key: string;
-  title: string;
-  desc: string;
   image: any;
 };
 
 const slides: Slide[] = [
   {
     key: 's1',
-    title: 'Fresh Blood, Real Impact',
-    desc: 'See verified requests, hospital details, and required units. Every drop counts, every donor saves a life.',
     image: require('@/assets/images/onboarding/screen1-img.png'),
   },
   {
     key: 's2',
-    title: 'Blood When You Need It',
-    desc: 'Find blood quickly through real-time availability and nearby donors. No delays, no panic, just fast and reliable help.',
     image: require('@/assets/images/onboarding/screen2-img.png'),
   },
   {
     key: 's3',
-    title: 'Donate Blood, Get Rewarded',
-    desc: 'Build Pulse Score. Track donations and unlock benefits like health & insurance perks',
     image: require('@/assets/images/onboarding/screen3-img.png'),
   },
 ];
 
 export default function OnboardingScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const listRef = useRef<FlatList<Slide>>(null);
   const [index, setIndex] = useState(0);
 
@@ -91,7 +85,7 @@ export default function OnboardingScreen() {
         </Pressable>
 
         <Pressable onPress={goToLogin} hitSlop={12}>
-          <Text className="font-semibold text-gray-500">Skip</Text>
+          <Text className="font-semibold text-gray-500">{t('onboarding.skip')}</Text>
         </Pressable>
       </View>
 
@@ -112,11 +106,11 @@ export default function OnboardingScreen() {
             </View>
 
             <Text className="mt-8 text-center text-3xl font-semibold text-gray-900">
-              {item.title}
+              {t(`onboarding.slides.${item.key}.title`)}
             </Text>
 
             <Text className="mt-3 px-4 text-center leading-6 text-gray-500">
-              {item.desc}
+              {t(`onboarding.slides.${item.key}.desc`)}
             </Text>
           </View>
         )}
@@ -144,7 +138,7 @@ export default function OnboardingScreen() {
         >
           <View className="flex-row items-center">
             <Text className="text-base font-semibold text-white">
-              {isLast ? 'Get Started' : 'Next'}
+              {isLast ? t('onboarding.getStarted') : t('onboarding.next')}
             </Text>
             <Ionicons
               name="arrow-forward"
@@ -157,9 +151,11 @@ export default function OnboardingScreen() {
 
         {/* Bottom link */}
         <View className="mt-5 flex-row justify-center">
-          <Text className="text-gray-500">Already have an account? </Text>
+          <Text className="text-gray-500">{t('onboarding.alreadyHaveAccount')} </Text>
           <Pressable onPress={goToLogin} hitSlop={10}>
-            <Text className="font-semibold text-blue-600">Sign in</Text>
+            <Text className="font-semibold text-blue-600">
+              {t('common.actions.signIn')}
+            </Text>
           </Pressable>
         </View>
       </View>

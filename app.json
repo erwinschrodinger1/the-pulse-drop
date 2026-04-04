@@ -18,7 +18,8 @@
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
       ],
-      "expo-background-task"
+      "expo-background-task",
+      "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true,

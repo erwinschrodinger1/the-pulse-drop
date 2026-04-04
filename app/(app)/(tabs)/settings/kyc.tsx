@@ -22,11 +22,12 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import ElevatedContainer from '@/components/ElevatedContainer';
 import { supabase } from '@/lib/supabase';
 import { useAuthContext } from '@/hooks/use-auth-context';
+import { useTranslation } from 'react-i18next';
 
 const KYC_BUCKET = 'kyc';
 
 function formatDisplayDate(date: Date | null) {
-  if (!date) return 'Select date';
+  if (!date) return null;
 
   return date.toLocaleDateString('en-US', {
     month: 'long',
@@ -64,6 +65,8 @@ function UploadBlock({
   onCamera: () => void;
   circular?: boolean;
 }) {
+  const { t } = useTranslation();
+
   return (
     <View className="mt-5">
       <Text className="text-sm font-medium text-gray-500">{title}</Text>
@@ -76,7 +79,7 @@ function UploadBlock({
             resizeMode="cover"
           />
         ) : (
-          <Text className="text-gray-400">No file selected</Text>
+          <Text className="text-gray-400">{t('kyc.documents.none')}</Text>
         )}
 
         <View className="mt-4 flex-row gap-3">
@@ -85,7 +88,7 @@ function UploadBlock({
             disabled={uploading}
             className={`rounded-xl px-4 py-3 ${uploading ? 'bg-blue-300' : 'bg-blue-600'}`}
           >
-            <Text className="font-semibold text-white">Select from device</Text>
+            <Text className="font-semibold text-white">{t('kyc.documents.select')}</Text>
           </Pressable>
 
           <Pressable
@@ -93,7 +96,9 @@ function UploadBlock({
             disabled={uploading}
             className="rounded-xl border border-blue-600 bg-white px-4 py-3"
           >
-            <Text className="font-semibold text-blue-600">Take picture</Text>
+            <Text className="font-semibold text-blue-600">
+              {t('kyc.documents.camera')}
+            </Text>
           </Pressable>
         </View>
       </View>
@@ -103,6 +108,7 @@ function UploadBlock({
 
 export default function KYCScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -142,7 +148,7 @@ export default function KYCScreen() {
         setIdBack(metadata.kyc_id_back ?? '');
         setSelfie(metadata.kyc_selfie ?? '');
       } catch (error: any) {
-        Alert.alert('Error', error?.message ?? 'Could not load KYC info.');
+        Alert.alert(t('kyc.errors.title'), error?.message ?? t('kyc.errors.loadFailed'));
       } finally {
         setLoading(false);
       }
@@ -221,10 +227,10 @@ export default function KYCScreen() {
 
       if (!permission.granted) {
         Alert.alert(
-          'Permission needed',
+          t('kyc.permissions.neededTitle'),
           useCamera
-            ? 'Please allow camera access.'
-            : 'Please allow photo library access.',
+            ? t('kyc.permissions.cameraMessage')
+            : t('kyc.permissions.libraryMessage'),
         );
         return;
       }
@@ -248,7 +254,10 @@ export default function KYCScreen() {
       if (type === 'id-back') setIdBack(uploadedUrl);
       if (type === 'selfie') setSelfie(uploadedUrl);
     } catch (error: any) {
-      Alert.alert('Upload failed', error?.message ?? 'Could not upload image.');
+      Alert.alert(
+        t('kyc.errors.uploadFailedTitle'),
+        error?.message ?? t('kyc.errors.uploadFailed'),
+      );
     } finally {
       setUploading(false);
     }
@@ -256,32 +265,38 @@ export default function KYCScreen() {
 
   const handleSave = async () => {
     if (!fullName.trim()) {
-      Alert.alert('Missing name', 'Please enter your full name.');
+      Alert.alert(t('kyc.errors.missingNameTitle'), t('kyc.errors.missingNameMessage'));
       return;
     }
 
     if (!dob) {
-      Alert.alert('Missing date of birth', 'Please select your date of birth.');
+      Alert.alert(t('kyc.errors.missingDobTitle'), t('kyc.errors.missingDobMessage'));
       return;
     }
 
     if (!phone.trim()) {
-      Alert.alert('Missing phone number', 'Please enter your phone number.');
+      Alert.alert(t('kyc.errors.missingPhoneTitle'), t('kyc.errors.missingPhoneMessage'));
       return;
     }
 
     if (!address.trim()) {
-      Alert.alert('Missing address', 'Please enter your address.');
+      Alert.alert(
+        t('kyc.errors.missingAddressTitle'),
+        t('kyc.errors.missingAddressMessage'),
+      );
       return;
     }
 
     if (!idNumber.trim()) {
-      Alert.alert('Missing ID number', 'Please enter your citizenship or ID number.');
+      Alert.alert(t('kyc.errors.missingIdTitle'), t('kyc.errors.missingIdMessage'));
       return;
     }
 
     if (!idFront || !idBack || !selfie) {
-      Alert.alert('Missing documents', 'Please upload ID front, ID back, and a selfie.');
+      Alert.alert(
+        t('kyc.errors.missingDocumentsTitle'),
+        t('kyc.errors.missingDocumentsMessage'),
+      );
       return;
     }
 
@@ -314,10 +329,13 @@ export default function KYCScreen() {
         throw new Error('KYC saved but user data was not returned.');
       }
 
-      Alert.alert('Success', 'Your KYC has been submitted.');
+      Alert.alert(t('kyc.success.title'), t('kyc.success.submitted'));
       router.back();
     } catch (error: any) {
-      Alert.alert('Save failed', error?.message ?? 'Something went wrong.');
+      Alert.alert(
+        t('kyc.errors.saveFailedTitle'),
+        error?.message ?? t('kyc.errors.saveFailed'),
+      );
     } finally {
       setSaving(false);
     }
@@ -327,7 +345,7 @@ export default function KYCScreen() {
     return (
       <View className="flex-1 items-center justify-center bg-white">
         <ActivityIndicator size="large" color="#2563EB" />
-        <Text className="mt-3 text-gray-500">Loading KYC...</Text>
+        <Text className="mt-3 text-gray-500">{t('kyc.loading')}</Text>
       </View>
     );
   }
@@ -347,60 +365,68 @@ export default function KYCScreen() {
         </Pressable>
 
         <View className="flex-1">
-          <Text className="text-3xl font-bold text-black">Fill Up KYC</Text>
-          <Text className="mt-1 text-base text-gray-500">
-            Verify your identity to unlock more trust and safety features.
-          </Text>
+          <Text className="text-3xl font-bold text-black">{t('kyc.title')}</Text>
+          <Text className="mt-1 text-base text-gray-500">{t('kyc.subtitle')}</Text>
         </View>
       </View>
 
       <ElevatedContainer className="mt-6 px-5 py-6">
-        <Text className="text-xl font-bold text-black">Personal Details</Text>
+        <Text className="text-xl font-bold text-black">{t('kyc.sections.personal')}</Text>
 
-        <Text className="mt-5 text-sm font-medium text-gray-500">Full Name</Text>
+        <Text className="mt-5 text-sm font-medium text-gray-500">
+          {t('kyc.fields.fullName')}
+        </Text>
         <TextInput
           value={fullName}
           onChangeText={setFullName}
-          placeholder="Enter your full name"
+          placeholder={t('kyc.placeholders.fullName')}
           placeholderTextColor="#9CA3AF"
           className="mt-2 rounded-xl border border-gray-200 bg-gray-50 px-4 py-4 text-base text-gray-900"
         />
 
-        <Text className="mt-5 text-sm font-medium text-gray-500">Date of Birth</Text>
+        <Text className="mt-5 text-sm font-medium text-gray-500">
+          {t('kyc.fields.dob')}
+        </Text>
         <Pressable
           onPress={() => setShowDobPicker(true)}
           className="mt-2 flex-row items-center justify-between rounded-xl border border-gray-200 bg-gray-50 px-4 py-4"
         >
           <Text className="text-base text-gray-900">
-            {dob ? formatDisplayDate(dob) : 'Select date of birth'}
+            {dob ? formatDisplayDate(dob) : t('kyc.placeholders.dob')}
           </Text>
           <FontAwesome5 name="calendar-alt" size={18} color="#6B7280" />
         </Pressable>
 
-        <Text className="mt-5 text-sm font-medium text-gray-500">Gender</Text>
+        <Text className="mt-5 text-sm font-medium text-gray-500">
+          {t('kyc.fields.gender')}
+        </Text>
         <TextInput
           value={gender}
           onChangeText={setGender}
-          placeholder="Enter gender"
+          placeholder={t('kyc.placeholders.gender')}
           placeholderTextColor="#9CA3AF"
           className="mt-2 rounded-xl border border-gray-200 bg-gray-50 px-4 py-4 text-base text-gray-900"
         />
 
-        <Text className="mt-5 text-sm font-medium text-gray-500">Phone Number</Text>
+        <Text className="mt-5 text-sm font-medium text-gray-500">
+          {t('kyc.fields.phoneNumber')}
+        </Text>
         <TextInput
           value={phone}
           onChangeText={setPhone}
-          placeholder="Enter phone number"
+          placeholder={t('kyc.placeholders.phone')}
           placeholderTextColor="#9CA3AF"
           keyboardType="phone-pad"
           className="mt-2 rounded-xl border border-gray-200 bg-gray-50 px-4 py-4 text-base text-gray-900"
         />
 
-        <Text className="mt-5 text-sm font-medium text-gray-500">Address</Text>
+        <Text className="mt-5 text-sm font-medium text-gray-500">
+          {t('kyc.fields.address')}
+        </Text>
         <TextInput
           value={address}
           onChangeText={setAddress}
-          placeholder="Enter your address"
+          placeholder={t('kyc.placeholders.address')}
           placeholderTextColor="#9CA3AF"
           multiline
           textAlignVertical="top"
@@ -408,34 +434,40 @@ export default function KYCScreen() {
         />
 
         <Text className="mt-5 text-sm font-medium text-gray-500">
-          Citizenship / ID Number
+          {t('kyc.fields.idNumber')}
         </Text>
         <TextInput
           value={idNumber}
           onChangeText={setIdNumber}
-          placeholder="Enter ID number"
+          placeholder={t('kyc.placeholders.idNumber')}
           placeholderTextColor="#9CA3AF"
           className="mt-2 rounded-xl border border-gray-200 bg-gray-50 px-4 py-4 text-base text-gray-900"
         />
       </ElevatedContainer>
 
       <ElevatedContainer className="mt-6 px-5 py-6">
-        <Text className="text-xl font-bold text-black">Emergency Contact</Text>
+        <Text className="text-xl font-bold text-black">
+          {t('kyc.sections.emergency')}
+        </Text>
 
-        <Text className="mt-5 text-sm font-medium text-gray-500">Name</Text>
+        <Text className="mt-5 text-sm font-medium text-gray-500">
+          {t('kyc.fields.name')}
+        </Text>
         <TextInput
           value={emergencyName}
           onChangeText={setEmergencyName}
-          placeholder="Enter emergency contact name"
+          placeholder={t('kyc.placeholders.emergencyName')}
           placeholderTextColor="#9CA3AF"
           className="mt-2 rounded-xl border border-gray-200 bg-gray-50 px-4 py-4 text-base text-gray-900"
         />
 
-        <Text className="mt-5 text-sm font-medium text-gray-500">Phone Number</Text>
+        <Text className="mt-5 text-sm font-medium text-gray-500">
+          {t('kyc.fields.phoneNumber')}
+        </Text>
         <TextInput
           value={emergencyPhone}
           onChangeText={setEmergencyPhone}
-          placeholder="Enter emergency contact number"
+          placeholder={t('kyc.placeholders.emergencyPhone')}
           placeholderTextColor="#9CA3AF"
           keyboardType="phone-pad"
           className="mt-2 rounded-xl border border-gray-200 bg-gray-50 px-4 py-4 text-base text-gray-900"
@@ -443,13 +475,13 @@ export default function KYCScreen() {
       </ElevatedContainer>
 
       <ElevatedContainer className="mt-6 px-5 py-6">
-        <Text className="text-xl font-bold text-black">Verification Documents</Text>
-        <Text className="mt-2 text-sm text-gray-500">
-          Upload clear images for faster verification.
+        <Text className="text-xl font-bold text-black">
+          {t('kyc.sections.documents')}
         </Text>
+        <Text className="mt-2 text-sm text-gray-500">{t('kyc.documents.hint')}</Text>
 
         <UploadBlock
-          title="ID Front"
+          title={t('kyc.documents.idFront')}
           imageUrl={idFront}
           uploading={uploading}
           onSelect={() => pickImage('id-front', false)}
@@ -457,7 +489,7 @@ export default function KYCScreen() {
         />
 
         <UploadBlock
-          title="ID Back"
+          title={t('kyc.documents.idBack')}
           imageUrl={idBack}
           uploading={uploading}
           onSelect={() => pickImage('id-back', false)}
@@ -465,7 +497,7 @@ export default function KYCScreen() {
         />
 
         <UploadBlock
-          title="Selfie Photo"
+          title={t('kyc.documents.selfie')}
           imageUrl={selfie}
           uploading={uploading}
           onSelect={() => pickImage('selfie', false)}
@@ -476,7 +508,9 @@ export default function KYCScreen() {
         {uploading ? (
           <View className="mt-4 flex-row items-center">
             <ActivityIndicator size="small" color="#2563EB" />
-            <Text className="ml-2 text-sm text-gray-500">Uploading image...</Text>
+            <Text className="ml-2 text-sm text-gray-500">
+              {t('kyc.documents.uploading')}
+            </Text>
           </View>
         ) : null}
       </ElevatedContainer>
@@ -490,7 +524,7 @@ export default function KYCScreen() {
           }`}
         >
           <Text className="text-base font-semibold text-white">
-            {saving ? 'Submitting...' : 'Submit KYC'}
+            {saving ? t('kyc.actions.submitting') : t('kyc.actions.submit')}
           </Text>
         </Pressable>
 
@@ -499,7 +533,9 @@ export default function KYCScreen() {
           disabled={saving || uploading}
           className="items-center rounded-md border border-gray-200 py-4"
         >
-          <Text className="text-base font-semibold text-gray-700">Cancel</Text>
+          <Text className="text-base font-semibold text-gray-700">
+            {t('common.actions.cancel')}
+          </Text>
         </Pressable>
       </View>
 
