@@ -18,8 +18,8 @@ export const AuthContext = createContext<AuthData>({
   isLoggedIn: false,
   ready: false,
   hasOnboarded: false,
-  completeOnboarding: async () => { },
-  logout: async () => { },
+  completeOnboarding: async () => {},
+  logout: async () => {},
 });
 
 export const useAuthContext = () => useContext(AuthContext);

@@ -54,11 +54,6 @@ export default function SigninScreen() {
     }
   };
 
-  const inputStyle = (field: 'username' | 'password') =>
-    `flex-row items-center bg-gray-50 border rounded-2xl px-4 h-12 ${
-      focus === field ? 'border-blue-500' : 'border-gray-200'
-    }`;
-
   const inputBase = 'flex-row items-center bg-gray-50 border rounded-2xl px-4 h-12';
   const inputNormal = 'border-gray-200';
   const inputFocused = 'border-blue-500';

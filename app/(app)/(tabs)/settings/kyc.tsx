@@ -126,7 +126,6 @@ export default function KYCScreen() {
   useEffect(() => {
     const loadKyc = async () => {
       try {
-
         if (!user) return;
 
         const metadata = user.user.user_metadata ?? {};
@@ -164,7 +163,7 @@ export default function KYCScreen() {
 
   const uploadKycImage = async (
     localUri: string,
-    type: 'id-front' | 'id-back' | 'selfie'
+    type: 'id-front' | 'id-back' | 'selfie',
   ) => {
     const {
       data: { user },
@@ -181,7 +180,7 @@ export default function KYCScreen() {
       {
         compress: 0.7,
         format: ImageManipulator.SaveFormat.JPEG,
-      }
+      },
     );
 
     const response = await fetch(manipulated.uri);
@@ -211,7 +210,7 @@ export default function KYCScreen() {
 
   const pickImage = async (
     type: 'id-front' | 'id-back' | 'selfie',
-    useCamera = false
+    useCamera = false,
   ) => {
     try {
       setUploading(true);
@@ -225,21 +224,21 @@ export default function KYCScreen() {
           'Permission needed',
           useCamera
             ? 'Please allow camera access.'
-            : 'Please allow photo library access.'
+            : 'Please allow photo library access.',
         );
         return;
       }
 
       const result = useCamera
         ? await ImagePicker.launchCameraAsync({
-          allowsEditing: true,
-          quality: 0.8,
-        })
+            allowsEditing: true,
+            quality: 0.8,
+          })
         : await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ['images'],
-          allowsEditing: true,
-          quality: 0.8,
-        });
+            mediaTypes: ['images'],
+            allowsEditing: true,
+            quality: 0.8,
+          });
 
       if (result.canceled || !result.assets?.[0]?.uri) return;
 
@@ -282,10 +281,7 @@ export default function KYCScreen() {
     }
 
     if (!idFront || !idBack || !selfie) {
-      Alert.alert(
-        'Missing documents',
-        'Please upload ID front, ID back, and a selfie.'
-      );
+      Alert.alert('Missing documents', 'Please upload ID front, ID back, and a selfie.');
       return;
     }
 
@@ -489,8 +485,9 @@ export default function KYCScreen() {
         <Pressable
           onPress={handleSave}
           disabled={saving || uploading}
-          className={`items-center rounded-md py-4 ${saving || uploading ? 'bg-blue-300' : 'bg-blue-600'
-            }`}
+          className={`items-center rounded-md py-4 ${
+            saving || uploading ? 'bg-blue-300' : 'bg-blue-600'
+          }`}
         >
           <Text className="text-base font-semibold text-white">
             {saving ? 'Submitting...' : 'Submit KYC'}

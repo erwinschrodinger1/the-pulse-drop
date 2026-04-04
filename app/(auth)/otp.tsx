@@ -16,12 +16,14 @@ export default function OtpScreen() {
   const router = useRouter();
 
   const [digits, setDigits] = useState(['', '', '', '', '', '']);
-  const inputsRef = useRef<Array<TextInput | null>>([]);
+  const inputsRef = useRef<(TextInput | null)[]>([]);
   const [seconds, setSeconds] = useState(30);
 
+  // eslint-disable-next-line
   const otp = useMemo(() => digits.join(''), [digits]);
   const canVerify = useMemo(() => digits.every((d) => d !== ''), [digits]);
 
+  // eslint-disable-next-line
   const { from, email } = useLocalSearchParams<{
     from?: 'forgot' | 'signup';
     email?: string;

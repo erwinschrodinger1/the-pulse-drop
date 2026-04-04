@@ -52,14 +52,13 @@ function SettingsRow({
 
       <View className="flex-1">
         <Text
-          className={`text-base font-semibold ${danger ? 'text-red-600' : 'text-gray-900'
-            }`}
+          className={`text-base font-semibold ${
+            danger ? 'text-red-600' : 'text-gray-900'
+          }`}
         >
           {title}
         </Text>
-        {subtitle ? (
-          <Text className="mt-1 text-sm text-gray-500">{subtitle}</Text>
-        ) : null}
+        {subtitle ? <Text className="mt-1 text-sm text-gray-500">{subtitle}</Text> : null}
       </View>
 
       {right ?? <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />}
@@ -67,13 +66,7 @@ function SettingsRow({
   );
 }
 
-function Section({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <View className="mt-6">
       <Text className="mb-2 px-4 text-sm font-semibold uppercase tracking-wide text-gray-400">
@@ -121,8 +114,7 @@ export default function SettingsScreen() {
         setPrefs({
           emergency_alerts:
             metadata.settings_emergency_alerts ?? DEFAULT_PREFS.emergency_alerts,
-          nearby_alerts:
-            metadata.settings_nearby_alerts ?? DEFAULT_PREFS.nearby_alerts,
+          nearby_alerts: metadata.settings_nearby_alerts ?? DEFAULT_PREFS.nearby_alerts,
           donation_reminders:
             metadata.settings_donation_reminders ?? DEFAULT_PREFS.donation_reminders,
           eligibility_reminders:
@@ -150,7 +142,7 @@ export default function SettingsScreen() {
 
   const updatePreference = async <K extends keyof PreferencesState>(
     key: K,
-    value: PreferencesState[K]
+    value: PreferencesState[K],
   ) => {
     const previous = prefs;
 
@@ -196,7 +188,7 @@ export default function SettingsScreen() {
   const handleDeleteAccount = () => {
     Alert.alert(
       'Delete Account',
-      'This should call a secure backend or admin flow. Do not delete accounts directly from the client with elevated privileges.'
+      'This should call a secure backend or admin flow. Do not delete accounts directly from the client with elevated privileges.',
     );
   };
 
@@ -304,9 +296,7 @@ export default function SettingsScreen() {
           right={
             <Switch
               value={prefs.eligibility_reminders}
-              onValueChange={(value) =>
-                updatePreference('eligibility_reminders', value)
-              }
+              onValueChange={(value) => updatePreference('eligibility_reminders', value)}
             />
           }
         />
@@ -351,24 +341,20 @@ export default function SettingsScreen() {
           title="Default View"
           subtitle="Choose your preferred request browsing mode"
           onPress={() =>
-            Alert.alert(
-              'Default View',
-              'Choose your preferred view.',
-              [
-                {
-                  text: 'Map',
-                  onPress: () => updatePreference('default_view', 'map'),
-                },
-                {
-                  text: 'List',
-                  onPress: () => updatePreference('default_view', 'list'),
-                },
-                {
-                  text: 'Cancel',
-                  style: 'cancel',
-                },
-              ]
-            )
+            Alert.alert('Default View', 'Choose your preferred view.', [
+              {
+                text: 'Map',
+                onPress: () => updatePreference('default_view', 'map'),
+              },
+              {
+                text: 'List',
+                onPress: () => updatePreference('default_view', 'list'),
+              },
+              {
+                text: 'Cancel',
+                style: 'cancel',
+              },
+            ])
           }
           right={
             <Text className="text-sm font-medium capitalize text-gray-500">
@@ -395,9 +381,7 @@ export default function SettingsScreen() {
         />
         <View className="h-px bg-gray-100" />
         <SettingsRow
-          icon={
-            <Ionicons name="chatbox-ellipses-outline" size={20} color="#2563EB" />
-          }
+          icon={<Ionicons name="chatbox-ellipses-outline" size={20} color="#2563EB" />}
           title="Contact Support"
           onPress={() => Alert.alert('Coming soon')}
         />
@@ -409,21 +393,13 @@ export default function SettingsScreen() {
         />
         <View className="h-px bg-gray-100" />
         <SettingsRow
-          icon={
-            <Ionicons name="shield-checkmark-outline" size={20} color="#2563EB" />
-          }
+          icon={<Ionicons name="shield-checkmark-outline" size={20} color="#2563EB" />}
           title="Terms & Conditions"
           onPress={() => Alert.alert('Coming soon')}
         />
         <View className="h-px bg-gray-100" />
         <SettingsRow
-          icon={
-            <Ionicons
-              name="information-circle-outline"
-              size={20}
-              color="#2563EB"
-            />
-          }
+          icon={<Ionicons name="information-circle-outline" size={20} color="#2563EB" />}
           title="About App"
           subtitle="Version 1.0.0"
           onPress={() => Alert.alert('Coming soon')}

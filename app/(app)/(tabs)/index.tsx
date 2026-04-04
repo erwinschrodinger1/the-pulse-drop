@@ -4,7 +4,6 @@ import Entypo from '@expo/vector-icons/Entypo';
 import ElevatedContainer from '@/components/ElevatedContainer';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { ProgressChart } from 'react-native-chart-kit';
-import { supabase } from '@/lib/supabase';
 import { useAuthContext } from '@/hooks/use-auth-context';
 
 type UserProfile = {
@@ -51,6 +50,7 @@ export default function Home() {
     lastBloodDonated: null,
   });
 
+  // eslint-disable-next-line
   const { user, _ } = useAuthContext();
 
   useEffect(() => {

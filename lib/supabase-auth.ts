@@ -2,7 +2,6 @@ import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
 import Constants from 'expo-constants';
 import { supabase } from '@/lib/supabase';
-import { Toast } from 'toastify-react-native';
 import { EmailOtpType } from '@supabase/supabase-js';
 
 WebBrowser.maybeCompleteAuthSession();
@@ -75,7 +74,7 @@ export async function signInWithPassword(email: string, password: string) {
 }
 
 export async function signUp(name: string, email: string, password: string) {
-  const emailRedirectTo = getRedirectUrl({type: 'signup'});
+  const emailRedirectTo = getRedirectUrl({ type: 'signup' });
 
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -88,7 +87,7 @@ export async function signUp(name: string, email: string, password: string) {
 
   if (error) throw error;
 
-  if (data.user?.role != "authenticated") {
+  if (data.user?.role !== 'authenticated') {
     throw new Error('Registration failed: email already exist');
   }
 
@@ -97,7 +96,7 @@ export async function signUp(name: string, email: string, password: string) {
 
 // export async function resendVerificationEmail(email: string, type: "signup"|"recovery") {
 //   const emailRedirectTo = getRedirectUrl();
-  
+
 //   const { data, error } = await supabase.auth.resend({
 //     type: type,
 //     email,
@@ -111,13 +110,12 @@ export async function signUp(name: string, email: string, password: string) {
 // }
 
 export async function resetPassword(email: string) {
-  const emailRedirectTo = getRedirectUrl({type: 'recovery'});
+  const emailRedirectTo = getRedirectUrl({ type: 'recovery' });
   console.log('Reset password redirect URL:', emailRedirectTo);
-
 
   const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: emailRedirectTo,
-  })
+  });
 
   if (error) throw error;
 

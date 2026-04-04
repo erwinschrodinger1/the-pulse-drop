@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { Asset } from 'expo-asset';
 import * as FileSystem from 'expo-file-system/legacy';
-import { LeafletView, AnimationType, MapMarker } from 'react-native-leaflet-view';
+import { LeafletView, AnimationType } from 'react-native-leaflet-view';
 import * as Location from 'expo-location';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -139,7 +139,8 @@ export default function RequestPage() {
             {
               key: 'map',
               render: (active) => (
-                <Ionicons name="map" size={24} color={active ? '#FFFFFF' : '#000000'} />),
+                <Ionicons name="map" size={24} color={active ? '#FFFFFF' : '#000000'} />
+              ),
             },
             {
               key: 'list',

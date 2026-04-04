@@ -21,7 +21,7 @@ export default function BottomNav() {
     <SafeAreaView className="absolute bottom-2 left-0 right-0 items-center">
       <View className="flex-row items-center">
         {TABS.map((tab, index) => {
-          const isActive = pathname == tab.route;
+          const isActive = pathname === tab.route;
 
           return (
             <Pressable

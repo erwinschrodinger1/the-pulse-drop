@@ -38,9 +38,10 @@ const allCountries = getCountries().map((code) => ({
 function formatDate(date: Date | null) {
   if (!date) return 'Select date';
 
-  return `${date.getFullYear()}-${String(
-    date.getMonth() + 1
-  ).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+    2,
+    '0',
+  )}-${String(date.getDate()).padStart(2, '0')}`;
 }
 
 export default function CompleteProfile() {
@@ -57,10 +58,7 @@ export default function CompleteProfile() {
 
   const callingCode = getCountryCallingCode(country);
 
-  const formattedDate = useMemo(
-    () => formatDate(lastDonated),
-    [lastDonated]
-  );
+  const formattedDate = useMemo(() => formatDate(lastDonated), [lastDonated]);
 
   // Detect possible countries dynamically
   const possibleCountries = useMemo(() => {
@@ -73,10 +71,7 @@ export default function CompleteProfile() {
     }
   }, [phoneNumber]);
 
-  const onChangeDate = (
-    event: DateTimePickerEvent,
-    date?: Date
-  ) => {
+  const onChangeDate = (event: DateTimePickerEvent, date?: Date) => {
     if (Platform.OS !== 'ios') {
       setShowDatePicker(false);
     }
@@ -88,18 +83,12 @@ export default function CompleteProfile() {
 
   const handleSave = async () => {
     if (!phoneNumber.trim()) {
-      Alert.alert(
-        'Missing phone number',
-        'Please enter your phone number.'
-      );
+      Alert.alert('Missing phone number', 'Please enter your phone number.');
       return;
     }
 
     if (!selectedBloodGroup) {
-      Alert.alert(
-        'Missing blood group',
-        'Please select your blood group.'
-      );
+      Alert.alert('Missing blood group', 'Please select your blood group.');
       return;
     }
 
@@ -108,10 +97,7 @@ export default function CompleteProfile() {
     const parsed = parsePhoneNumberFromString(fullPhone);
 
     if (!parsed || !parsed.isValid()) {
-      Alert.alert(
-        'Invalid phone number',
-        'Please enter a valid phone number.'
-      );
+      Alert.alert('Invalid phone number', 'Please enter a valid phone number.');
       return;
     }
 
@@ -129,24 +115,18 @@ export default function CompleteProfile() {
       const payload = {
         phone: parsed.number, // single string
         blood_group: selectedBloodGroup,
-        last_blood_donated: lastDonated
-          ? formatDate(lastDonated)
-          : null,
+        last_blood_donated: lastDonated ? formatDate(lastDonated) : null,
       };
 
-      const { error } =
-        await supabase.auth.updateUser({
-          data: payload,
-        });
+      const { error } = await supabase.auth.updateUser({
+        data: payload,
+      });
 
       if (error) throw error;
 
       router.replace('/(app)/(tabs)');
     } catch (err: any) {
-      Alert.alert(
-        'Save failed',
-        err?.message ?? 'Something went wrong.'
-      );
+      Alert.alert('Save failed', err?.message ?? 'Something went wrong.');
     } finally {
       setLoading(false);
     }
@@ -159,31 +139,21 @@ export default function CompleteProfile() {
       showsVerticalScrollIndicator={false}
     >
       <ElevatedContainer className="mx-8 mt-4 py-12">
-
-        <Text className="text-3xl font-bold text-black">
-          Complete Profile
-        </Text>
+        <Text className="text-3xl font-bold text-black">Complete Profile</Text>
 
         {/* PHONE INPUT */}
 
         <View className="mt-6">
-          <Text className="text-2xl font-bold">
-            Phone Number
-          </Text>
+          <Text className="text-2xl font-bold">Phone Number</Text>
 
           <View className="mt-5 flex-row items-center gap-2">
-
             {/* COUNTRY SELECTOR */}
 
             <Pressable
-              onPress={() =>
-                setShowCountryModal(true)
-              }
+              onPress={() => setShowCountryModal(true)}
               className="rounded-xl border-2 border-blue-400 bg-gray-100 px-4 py-4"
             >
-              <Text className="font-semibold">
-                +{callingCode}
-              </Text>
+              <Text className="font-semibold">+{callingCode}</Text>
             </Pressable>
 
             {/* PHONE */}
@@ -195,17 +165,13 @@ export default function CompleteProfile() {
               keyboardType="phone-pad"
               className="flex-1 rounded-xl border-2 border-blue-400 bg-gray-100 px-4 py-4"
             />
-
           </View>
 
           {/* Suggested countries */}
           {possibleCountries.length > 0 && (
             <View className="mt-2 flex-row flex-wrap">
               {possibleCountries.map((c) => (
-                <Text
-                  key={c}
-                  className="mr-2 text-xs text-gray-500"
-                >
+                <Text key={c} className="mr-2 text-xs text-gray-500">
                   Possible: {c}
                 </Text>
               ))}
@@ -217,26 +183,17 @@ export default function CompleteProfile() {
 
         <View className="mt-6 flex-row flex-wrap gap-3">
           {bloodGroups.map((group) => {
-            const active =
-              selectedBloodGroup === group;
+            const active = selectedBloodGroup === group;
 
             return (
               <Pressable
                 key={group}
-                onPress={() =>
-                  setSelectedBloodGroup(group)
-                }
-                className={`rounded-2xl border px-5 py-3 ${active
-                  ? 'border-red-600 bg-red-600'
-                  : 'border-gray-200 bg-white'
-                  }`}
+                onPress={() => setSelectedBloodGroup(group)}
+                className={`rounded-2xl border px-5 py-3 ${
+                  active ? 'border-red-600 bg-red-600' : 'border-gray-200 bg-white'
+                }`}
               >
-                <Text
-                  className={`font-bold ${active
-                    ? 'text-white'
-                    : 'text-gray-800'
-                    }`}
-                >
+                <Text className={`font-bold ${active ? 'text-white' : 'text-gray-800'}`}>
                   {group}
                 </Text>
               </Pressable>
@@ -247,27 +204,14 @@ export default function CompleteProfile() {
         {/* DATE */}
 
         <View className="mt-6">
-
           <Pressable
-            onPress={() =>
-              setShowDatePicker(true)
-            }
+            onPress={() => setShowDatePicker(true)}
             className="flex-row items-center justify-between rounded-xl border-2 border-blue-400 bg-gray-100 px-4 py-4"
           >
-            <Text>
-              {lastDonated
-                ? formattedDate
-                : 'Select date'}
-            </Text>
+            <Text>{lastDonated ? formattedDate : 'Select date'}</Text>
 
-            <FontAwesome5
-              name="calendar-alt"
-              size={18}
-              color="#6b7280"
-            />
-
+            <FontAwesome5 name="calendar-alt" size={18} color="#6b7280" />
           </Pressable>
-
         </View>
 
         {showDatePicker && (
@@ -284,26 +228,19 @@ export default function CompleteProfile() {
         <Pressable
           onPress={handleSave}
           disabled={loading}
-          className={`mt-6 items-center rounded-md py-4 ${loading
-            ? 'bg-blue-300'
-            : 'bg-blue-600'
-            }`}
+          className={`mt-6 items-center rounded-md py-4 ${
+            loading ? 'bg-blue-300' : 'bg-blue-600'
+          }`}
         >
           <Text className="font-semibold text-white">
-            {loading
-              ? 'Saving...'
-              : 'Continue'}
+            {loading ? 'Saving...' : 'Continue'}
           </Text>
         </Pressable>
-
       </ElevatedContainer>
 
       {/* COUNTRY MODAL */}
 
-      <Modal
-        visible={showCountryModal}
-        animationType="slide"
-      >
+      <Modal visible={showCountryModal} animationType="slide">
         <FlatList
           data={allCountries}
           keyExtractor={(item) => item.code}
@@ -322,7 +259,6 @@ export default function CompleteProfile() {
           )}
         />
       </Modal>
-
     </ScrollView>
   );
 }
