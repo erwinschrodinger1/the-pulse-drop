@@ -14,9 +14,11 @@ import { useRouter } from 'expo-router';
 import { Toast } from 'toastify-react-native';
 import * as WebBrowser from 'expo-web-browser';
 import { signInWithPassword, signInWithOAuth } from '@/lib/supabase-auth';
+import { useTranslation } from 'react-i18next';
 
 export default function SigninScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -32,14 +34,15 @@ export default function SigninScreen() {
 
   const handleLogin = async () => {
     if (!username.trim() || !password.trim()) {
-      Toast.error('Please enter both username and password');
+      Toast.error(t('auth.login.errors.missingCredentials'));
       return;
     }
     try {
       await signInWithPassword(username, password);
       // Gate component will handle navigation automatically after auth state changes
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Login failed';
+      const message =
+        error instanceof Error ? error.message : t('auth.login.errors.failed');
       Toast.error(message);
     }
   };
@@ -50,7 +53,7 @@ export default function SigninScreen() {
       // Gate component will handle navigation automatically after auth state changes
     } catch (error) {
       console.error('OAuth login error:', error);
-      Toast.error('OAuth login failed');
+      Toast.error(t('auth.login.errors.oauthFailed'));
     }
   };
 
@@ -78,10 +81,12 @@ export default function SigninScreen() {
           />
         </View>
 
-        <Text className="text-center text-3xl font-semibold text-gray-900">Sign In</Text>
+        <Text className="text-center text-3xl font-semibold text-gray-900">
+          {t('auth.login.title')}
+        </Text>
 
         <Text className="mb-6 mt-2 text-center leading-5 text-gray-500">
-          Enter valid user name & password to continue
+          {t('auth.login.subtitle')}
         </Text>
 
         {/* Username */}
@@ -92,7 +97,7 @@ export default function SigninScreen() {
           <TextInput
             value={username}
             onChangeText={setUsername}
-            placeholder="User name"
+            placeholder={t('auth.login.usernamePlaceholder')}
             placeholderTextColor="#9CA3AF"
             className="ml-3 flex-1 text-gray-900"
             autoCapitalize="none"
@@ -110,7 +115,7 @@ export default function SigninScreen() {
           <TextInput
             value={password}
             onChangeText={setPassword}
-            placeholder="Password"
+            placeholder={t('auth.login.passwordPlaceholder')}
             placeholderTextColor="#9CA3AF"
             secureTextEntry={secure}
             className="ml-3 flex-1 text-gray-900"
@@ -133,7 +138,9 @@ export default function SigninScreen() {
           className="mt-3 self-end"
           hitSlop={10}
         >
-          <Text className="text-sm font-semibold text-blue-600">Forgot password</Text>
+          <Text className="text-sm font-semibold text-blue-600">
+            {t('auth.login.forgotPassword')}
+          </Text>
         </Pressable>
 
         {/* Login button */}
@@ -141,13 +148,17 @@ export default function SigninScreen() {
           onPress={handleLogin}
           className="mt-5 h-12 items-center justify-center rounded-2xl bg-blue-600"
         >
-          <Text className="text-base font-semibold text-white">Login</Text>
+          <Text className="text-base font-semibold text-white">
+            {t('auth.login.loginButton')}
+          </Text>
         </Pressable>
 
         {/* Divider */}
         <View className="my-6 w-full flex-row items-center">
           <View className="h-px flex-1 bg-gray-200" />
-          <Text className="mx-3 text-sm text-gray-400">Or continue with</Text>
+          <Text className="mx-3 text-sm text-gray-400">
+            {t('common.oauth.orContinueWith')}
+          </Text>
           <View className="h-px flex-1 bg-gray-200" />
         </View>
 
@@ -158,7 +169,9 @@ export default function SigninScreen() {
             onPress={() => handleOAuth('google')}
           >
             <FontAwesome name="google" size={18} color="#DB4437" />
-            <Text className="ml-2 font-medium text-gray-700">Google</Text>
+            <Text className="ml-2 font-medium text-gray-700">
+              {t('common.oauth.google')}
+            </Text>
           </Pressable>
 
           <Pressable
@@ -166,15 +179,19 @@ export default function SigninScreen() {
             onPress={() => handleOAuth('facebook')}
           >
             <Ionicons name="logo-facebook" size={18} color="#1877F2" />
-            <Text className="ml-2 font-medium text-gray-700">Facebook</Text>
+            <Text className="ml-2 font-medium text-gray-700">
+              {t('common.oauth.facebook')}
+            </Text>
           </Pressable>
         </View>
 
         {/* Signup link */}
         <View className="mt-6 flex-row justify-center">
-          <Text className="text-gray-500">Don’t have an account? </Text>
+          <Text className="text-gray-500">{t('auth.login.noAccount')} </Text>
           <Pressable onPress={() => router.push('/(auth)/register')} hitSlop={10}>
-            <Text className="font-semibold text-blue-600">Sign up</Text>
+            <Text className="font-semibold text-blue-600">
+              {t('common.actions.signUp')}
+            </Text>
           </Pressable>
         </View>
       </ScrollView>

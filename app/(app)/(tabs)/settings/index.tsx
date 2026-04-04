@@ -11,9 +11,11 @@ import {
 import { useRouter } from 'expo-router';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useTranslation } from 'react-i18next';
 
 import { useAuthContext } from '@/hooks/use-auth-context';
 import { supabase } from '@/lib/supabase';
+import { getLanguage, setLanguage } from '@/hooks/use-language';
 
 type SettingsRowProps = {
   icon: React.ReactNode;
@@ -94,10 +96,12 @@ const DEFAULT_PREFS: PreferencesState = {
 export default function SettingsScreen() {
   const router = useRouter();
   const { logout } = useAuthContext();
+  const { t } = useTranslation();
 
   const [loading, setLoading] = useState(true);
   const [syncingKey, setSyncingKey] = useState<keyof PreferencesState | null>(null);
   const [prefs, setPrefs] = useState<PreferencesState>(DEFAULT_PREFS);
+  const [language, setLanguageState] = useState<'en' | 'np'>(getLanguage());
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -131,7 +135,10 @@ export default function SettingsScreen() {
         });
       } catch (error: any) {
         console.error('Failed to load settings:', error);
-        Alert.alert('Error', error?.message ?? 'Could not load settings.');
+        Alert.alert(
+          t('settings.alert.errorTitle'),
+          error?.message ?? t('settings.alert.couldNotLoad'),
+        );
       } finally {
         setLoading(false);
       }
@@ -171,7 +178,10 @@ export default function SettingsScreen() {
       if (error) throw error;
     } catch (error: any) {
       setPrefs(previous);
-      Alert.alert('Update failed', error?.message ?? 'Could not save setting.');
+      Alert.alert(
+        t('settings.alert.updateFailedTitle'),
+        error?.message ?? t('settings.alert.couldNotSave'),
+      );
     } finally {
       setSyncingKey(null);
     }
@@ -181,23 +191,50 @@ export default function SettingsScreen() {
     try {
       await logout();
     } catch (error: any) {
-      Alert.alert('Logout failed', error?.message ?? 'Could not log out.');
+      Alert.alert(
+        t('settings.alert.logoutFailedTitle'),
+        error?.message ?? t('settings.alert.couldNotLogout'),
+      );
     }
   };
 
   const handleDeleteAccount = () => {
+    Alert.alert(t('settings.account.deleteTitle'), t('settings.account.deleteMessage'));
+  };
+
+  const handleLanguageSelect = () => {
     Alert.alert(
-      'Delete Account',
-      'This should call a secure backend or admin flow. Do not delete accounts directly from the client with elevated privileges.',
+      t('settings.localization.languageTitle'),
+      t('settings.localization.languageMessage'),
+      [
+        {
+          text: 'English',
+          onPress: () => {
+            setLanguage('en');
+            setLanguageState('en');
+          },
+        },
+        {
+          text: 'नेपाली',
+          onPress: () => {
+            setLanguage('np');
+            setLanguageState('np');
+          },
+        },
+        {
+          text: t('common.actions.cancel'),
+          style: 'cancel',
+        },
+      ],
     );
   };
 
   const kycStatusLabel =
     prefs.kyc_status === 'verified'
-      ? 'Verified'
+      ? t('settings.verification.status.verified')
       : prefs.kyc_status === 'rejected'
-        ? 'Rejected'
-        : 'Pending';
+        ? t('settings.verification.status.rejected')
+        : t('settings.verification.status.pending');
 
   const kycStatusColor =
     prefs.kyc_status === 'verified'
@@ -210,7 +247,7 @@ export default function SettingsScreen() {
     return (
       <View className="flex-1 items-center justify-center bg-gray-50">
         <ActivityIndicator size="large" color="#2563EB" />
-        <Text className="mt-3 text-gray-500">Loading settings...</Text>
+        <Text className="mt-3 text-gray-500">{t('settings.loading')}</Text>
       </View>
     );
   }
@@ -222,24 +259,22 @@ export default function SettingsScreen() {
       showsVerticalScrollIndicator={false}
     >
       <View className="mb-2">
-        <Text className="text-3xl font-bold text-gray-900">Settings</Text>
-        <Text className="mt-2 text-base text-gray-500">
-          Manage preferences, privacy, verification, and support.
-        </Text>
+        <Text className="text-3xl font-bold text-gray-900">{t('settings.title')}</Text>
+        <Text className="mt-2 text-base text-gray-500">{t('settings.subtitle')}</Text>
       </View>
 
       {syncingKey ? (
         <View className="mb-2 mt-2 flex-row items-center px-1">
           <ActivityIndicator size="small" color="#2563EB" />
-          <Text className="ml-2 text-sm text-gray-500">Saving changes…</Text>
+          <Text className="ml-2 text-sm text-gray-500">{t('settings.saving')}</Text>
         </View>
       ) : null}
 
-      <Section title="Verification">
+      <Section title={t('settings.sections.verification')}>
         <SettingsRow
           icon={<FontAwesome5 name="id-card" size={18} color="#2563EB" />}
-          title="Fill Up KYC"
-          subtitle="Verify your identity and unlock more trust features"
+          title={t('settings.verification.fillKycTitle')}
+          subtitle={t('settings.verification.fillKycSubtitle')}
           onPress={() => router.push('/settings/kyc')}
           right={
             <View className="flex-row items-center gap-2">
@@ -252,11 +287,24 @@ export default function SettingsScreen() {
         />
       </Section>
 
-      <Section title="Notifications">
+      <Section title={t('settings.sections.localization')}>
+        <SettingsRow
+          icon={<Ionicons name="language-outline" size={20} color="#2563EB" />}
+          title={t('settings.localization.languageTitle')}
+          subtitle={
+            language === 'np'
+              ? t('settings.localization.nepali')
+              : t('settings.localization.english')
+          }
+          onPress={handleLanguageSelect}
+        />
+      </Section>
+
+      <Section title={t('settings.sections.notifications')}>
         <SettingsRow
           icon={<Ionicons name="notifications-outline" size={20} color="#2563EB" />}
-          title="Emergency Blood Requests"
-          subtitle="Get alerts for urgent blood needs"
+          title={t('settings.notifications.emergencyTitle')}
+          subtitle={t('settings.notifications.emergencySubtitle')}
           right={
             <Switch
               value={prefs.emergency_alerts}
@@ -267,8 +315,8 @@ export default function SettingsScreen() {
         <View className="h-px bg-gray-100" />
         <SettingsRow
           icon={<Ionicons name="location-outline" size={20} color="#2563EB" />}
-          title="Nearby Requests"
-          subtitle="Receive alerts near your location"
+          title={t('settings.notifications.nearbyTitle')}
+          subtitle={t('settings.notifications.nearbySubtitle')}
           right={
             <Switch
               value={prefs.nearby_alerts}
@@ -279,8 +327,8 @@ export default function SettingsScreen() {
         <View className="h-px bg-gray-100" />
         <SettingsRow
           icon={<FontAwesome5 name="calendar-check" size={18} color="#2563EB" />}
-          title="Donation Reminders"
-          subtitle="Reminders to keep your donation schedule on track"
+          title={t('settings.notifications.donationRemindersTitle')}
+          subtitle={t('settings.notifications.donationRemindersSubtitle')}
           right={
             <Switch
               value={prefs.donation_reminders}
@@ -291,8 +339,8 @@ export default function SettingsScreen() {
         <View className="h-px bg-gray-100" />
         <SettingsRow
           icon={<Ionicons name="time-outline" size={20} color="#2563EB" />}
-          title="Eligibility Reminders"
-          subtitle="Get notified when you can donate again"
+          title={t('settings.notifications.eligibilityRemindersTitle')}
+          subtitle={t('settings.notifications.eligibilityRemindersSubtitle')}
           right={
             <Switch
               value={prefs.eligibility_reminders}
@@ -302,11 +350,11 @@ export default function SettingsScreen() {
         />
       </Section>
 
-      <Section title="Privacy & Safety">
+      <Section title={t('settings.sections.privacySafety')}>
         <SettingsRow
           icon={<Ionicons name="navigate-outline" size={20} color="#2563EB" />}
-          title="Share Location"
-          subtitle="Used for nearby requests and centers"
+          title={t('settings.privacy.shareLocationTitle')}
+          subtitle={t('settings.privacy.shareLocationSubtitle')}
           right={
             <Switch
               value={prefs.share_location}
@@ -317,8 +365,8 @@ export default function SettingsScreen() {
         <View className="h-px bg-gray-100" />
         <SettingsRow
           icon={<Ionicons name="call-outline" size={20} color="#2563EB" />}
-          title="Allow Hospitals to Contact Me"
-          subtitle="Let verified centers reach you for urgent needs"
+          title={t('settings.privacy.hospitalContactTitle')}
+          subtitle={t('settings.privacy.hospitalContactSubtitle')}
           right={
             <Switch
               value={prefs.hospital_contact}
@@ -328,33 +376,37 @@ export default function SettingsScreen() {
         />
       </Section>
 
-      <Section title="Donation Preferences">
+      <Section title={t('settings.sections.donationPreferences')}>
         <SettingsRow
           icon={<FontAwesome5 name="hospital" size={18} color="#2563EB" />}
-          title="Preferred Donation Centers"
-          subtitle="Choose centers you trust most"
-          onPress={() => Alert.alert('Coming soon')}
+          title={t('settings.preferences.centersTitle')}
+          subtitle={t('settings.preferences.centersSubtitle')}
+          onPress={() => Alert.alert(t('settings.common.comingSoon'))}
         />
         <View className="h-px bg-gray-100" />
         <SettingsRow
           icon={<Ionicons name="map-outline" size={20} color="#2563EB" />}
-          title="Default View"
-          subtitle="Choose your preferred request browsing mode"
+          title={t('settings.preferences.defaultViewTitle')}
+          subtitle={t('settings.preferences.defaultViewSubtitle')}
           onPress={() =>
-            Alert.alert('Default View', 'Choose your preferred view.', [
-              {
-                text: 'Map',
-                onPress: () => updatePreference('default_view', 'map'),
-              },
-              {
-                text: 'List',
-                onPress: () => updatePreference('default_view', 'list'),
-              },
-              {
-                text: 'Cancel',
-                style: 'cancel',
-              },
-            ])
+            Alert.alert(
+              t('settings.preferences.defaultViewTitle'),
+              t('settings.preferences.defaultViewMessage'),
+              [
+                {
+                  text: t('settings.preferences.map'),
+                  onPress: () => updatePreference('default_view', 'map'),
+                },
+                {
+                  text: t('settings.preferences.list'),
+                  onPress: () => updatePreference('default_view', 'list'),
+                },
+                {
+                  text: t('common.actions.cancel'),
+                  style: 'cancel',
+                },
+              ],
+            )
           }
           right={
             <Text className="text-sm font-medium capitalize text-gray-500">
@@ -364,52 +416,52 @@ export default function SettingsScreen() {
         />
       </Section>
 
-      <Section title="Credits & Trust">
+      <Section title={t('settings.sections.creditsTrust')}>
         <SettingsRow
           icon={<FontAwesome5 name="award" size={18} color="#2563EB" />}
-          title="Credit Score Details"
-          subtitle="See how trust and rewards work"
-          onPress={() => Alert.alert('Coming soon')}
+          title={t('settings.credits.detailsTitle')}
+          subtitle={t('settings.credits.detailsSubtitle')}
+          onPress={() => Alert.alert(t('settings.common.comingSoon'))}
         />
       </Section>
 
-      <Section title="Support & Legal">
+      <Section title={t('settings.sections.supportLegal')}>
         <SettingsRow
           icon={<Ionicons name="help-circle-outline" size={20} color="#2563EB" />}
-          title="Help Center"
-          onPress={() => Alert.alert('Coming soon')}
+          title={t('settings.support.helpCenter')}
+          onPress={() => Alert.alert(t('settings.common.comingSoon'))}
         />
         <View className="h-px bg-gray-100" />
         <SettingsRow
           icon={<Ionicons name="chatbox-ellipses-outline" size={20} color="#2563EB" />}
-          title="Contact Support"
-          onPress={() => Alert.alert('Coming soon')}
+          title={t('settings.support.contactSupport')}
+          onPress={() => Alert.alert(t('settings.common.comingSoon'))}
         />
         <View className="h-px bg-gray-100" />
         <SettingsRow
           icon={<Ionicons name="document-text-outline" size={20} color="#2563EB" />}
-          title="Privacy Policy"
-          onPress={() => Alert.alert('Coming soon')}
+          title={t('settings.support.privacyPolicy')}
+          onPress={() => Alert.alert(t('settings.common.comingSoon'))}
         />
         <View className="h-px bg-gray-100" />
         <SettingsRow
           icon={<Ionicons name="shield-checkmark-outline" size={20} color="#2563EB" />}
-          title="Terms & Conditions"
-          onPress={() => Alert.alert('Coming soon')}
+          title={t('settings.support.termsAndConditions')}
+          onPress={() => Alert.alert(t('settings.common.comingSoon'))}
         />
         <View className="h-px bg-gray-100" />
         <SettingsRow
           icon={<Ionicons name="information-circle-outline" size={20} color="#2563EB" />}
-          title="About App"
-          subtitle="Version 1.0.0"
-          onPress={() => Alert.alert('Coming soon')}
+          title={t('settings.support.aboutApp')}
+          subtitle={t('settings.support.version', { version: '1.0.0' })}
+          onPress={() => Alert.alert(t('settings.common.comingSoon'))}
         />
       </Section>
 
-      <Section title="Account">
+      <Section title={t('settings.sections.account')}>
         <SettingsRow
           icon={<Ionicons name="log-out-outline" size={20} color="#DC2626" />}
-          title="Logout"
+          title={t('settings.account.logout')}
           danger
           onPress={handleLogout}
           right={null}
@@ -417,8 +469,8 @@ export default function SettingsScreen() {
         <View className="h-px bg-gray-100" />
         <SettingsRow
           icon={<Ionicons name="trash-outline" size={20} color="#DC2626" />}
-          title="Delete Account"
-          subtitle="Permanently remove your account and data"
+          title={t('settings.account.delete')}
+          subtitle={t('settings.account.deleteSubtitle')}
           danger
           onPress={handleDeleteAccount}
           right={null}

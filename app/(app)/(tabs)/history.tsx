@@ -14,6 +14,7 @@ import DateTimePicker, {
 } from '@react-native-community/datetimepicker';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import ViewModeToggle from '@/components/ViewModeToggle';
+import { useTranslation } from 'react-i18next';
 
 type DonationHistoryItem = {
   id: string;
@@ -70,7 +71,7 @@ const initialRequestHistory: RequestHistoryItem[] = [
 ];
 
 function formatDisplayDate(date: Date | null) {
-  if (!date) return 'Select date';
+  if (!date) return null;
 
   return date.toLocaleDateString('en-US', {
     month: 'long',
@@ -95,6 +96,8 @@ function HistoryCard({
   type: 'donation' | 'request';
   onPress: () => void;
 }) {
+  const { t } = useTranslation();
+
   return (
     <Pressable
       onPress={onPress}
@@ -118,7 +121,9 @@ function HistoryCard({
       {item.units ? (
         <Text className="mt-2 text-sm text-gray-700">
           <Text className="font-semibold">
-            {type === 'donation' ? 'Donated: ' : 'Requested: '}
+            {type === 'donation'
+              ? `${t('history.donated')}: `
+              : `${t('history.requested')}: `}
           </Text>
           {item.units}
         </Text>
@@ -128,6 +133,7 @@ function HistoryCard({
 }
 
 export default function DonationHistoryScreen() {
+  const { t } = useTranslation();
   const [mode, setMode] = useState<'donation' | 'request'>('donation');
 
   const [donationHistory, setDonationHistory] =
@@ -178,17 +184,26 @@ export default function DonationHistoryScreen() {
 
   const handleAddManualEntry = () => {
     if (!donationDate) {
-      Alert.alert('Missing date', 'Please select the donation date.');
+      Alert.alert(
+        t('history.errors.missingDateTitle'),
+        t('history.errors.missingDateMessage'),
+      );
       return;
     }
 
     if (!location.trim()) {
-      Alert.alert('Missing location', 'Please enter donation location.');
+      Alert.alert(
+        t('history.errors.missingLocationTitle'),
+        t('history.errors.missingLocationMessage'),
+      );
       return;
     }
 
     if (!bloodGroup.trim()) {
-      Alert.alert('Missing blood group', 'Please enter blood group.');
+      Alert.alert(
+        t('history.errors.missingBloodGroupTitle'),
+        t('history.errors.missingBloodGroupMessage'),
+      );
       return;
     }
 
@@ -213,7 +228,7 @@ export default function DonationHistoryScreen() {
       showsVerticalScrollIndicator={false}
     >
       <View className="mb-4 flex-row items-center justify-between">
-        <Text className="text-2xl font-bold text-gray-900">History</Text>
+        <Text className="text-2xl font-bold text-gray-900">{t('history.title')}</Text>
 
         {mode === 'donation' ? (
           <Pressable
@@ -221,7 +236,9 @@ export default function DonationHistoryScreen() {
             className="flex-row items-center rounded-xl bg-blue-600 px-4 py-3"
           >
             <FontAwesome5 name="plus" size={14} color="white" />
-            <Text className="ml-2 font-semibold text-white">Add Manual Entry</Text>
+            <Text className="ml-2 font-semibold text-white">
+              {t('history.addManualEntry')}
+            </Text>
           </Pressable>
         ) : null}
       </View>
@@ -241,7 +258,7 @@ export default function DonationHistoryScreen() {
                   active ? 'text-white' : 'text-gray-700'
                 }`}
               >
-                Donation
+                {t('history.donationTab')}
               </Text>
             ),
           },
@@ -253,7 +270,7 @@ export default function DonationHistoryScreen() {
                   active ? 'text-white' : 'text-gray-700'
                 }`}
               >
-                Request
+                {t('history.requestTab')}
               </Text>
             ),
           },
@@ -265,10 +282,10 @@ export default function DonationHistoryScreen() {
           {sortedDonationHistory.length === 0 ? (
             <View className="mt-10 items-center rounded-2xl bg-white px-6 py-10">
               <Text className="text-lg font-semibold text-gray-800">
-                No donation history yet
+                {t('history.noDonationTitle')}
               </Text>
               <Text className="mt-2 text-center text-gray-500">
-                Add your first donation manually to start tracking your record.
+                {t('history.noDonationSubtitle')}
               </Text>
             </View>
           ) : (
@@ -287,10 +304,10 @@ export default function DonationHistoryScreen() {
           {sortedRequestHistory.length === 0 ? (
             <View className="mt-10 items-center rounded-2xl bg-white px-6 py-10">
               <Text className="text-lg font-semibold text-gray-800">
-                No request history yet
+                {t('history.noRequestTitle')}
               </Text>
               <Text className="mt-2 text-center text-gray-500">
-                Your past blood requests will appear here.
+                {t('history.noRequestSubtitle')}
               </Text>
             </View>
           ) : (
@@ -337,20 +354,20 @@ export default function DonationHistoryScreen() {
 
                 <View className="space-y-2">
                   <Text className="text-sm text-gray-700">
-                    <Text className="font-semibold">Blood group: </Text>
+                    <Text className="font-semibold">{t('history.bloodGroup')}: </Text>
                     {selectedDonation.bloodGroup}
                   </Text>
 
                   {selectedDonation.units ? (
                     <Text className="text-sm text-gray-700">
-                      <Text className="font-semibold">Amount: </Text>
+                      <Text className="font-semibold">{t('history.amount')}: </Text>
                       {selectedDonation.units}
                     </Text>
                   ) : null}
 
                   {selectedDonation.notes ? (
                     <Text className="text-sm text-gray-700">
-                      <Text className="font-semibold">Notes: </Text>
+                      <Text className="font-semibold">{t('history.notes')}: </Text>
                       {selectedDonation.notes}
                     </Text>
                   ) : null}
@@ -392,20 +409,20 @@ export default function DonationHistoryScreen() {
 
                 <View className="space-y-2">
                   <Text className="text-sm text-gray-700">
-                    <Text className="font-semibold">Blood group: </Text>
+                    <Text className="font-semibold">{t('history.bloodGroup')}: </Text>
                     {selectedRequest.bloodGroup}
                   </Text>
 
                   {selectedRequest.units ? (
                     <Text className="text-sm text-gray-700">
-                      <Text className="font-semibold">Requested: </Text>
+                      <Text className="font-semibold">{t('history.requested')}: </Text>
                       {selectedRequest.units}
                     </Text>
                   ) : null}
 
                   {selectedRequest.notes ? (
                     <Text className="text-sm text-gray-700">
-                      <Text className="font-semibold">Notes: </Text>
+                      <Text className="font-semibold">{t('history.notes')}: </Text>
                       {selectedRequest.notes}
                     </Text>
                   ) : null}
@@ -427,7 +444,9 @@ export default function DonationHistoryScreen() {
 
           <View className="rounded-t-3xl bg-white p-4">
             <View className="mb-4 flex-row items-center justify-between">
-              <Text className="text-xl font-bold text-gray-900">Add Donation Entry</Text>
+              <Text className="text-xl font-bold text-gray-900">
+                {t('history.addDonationEntry')}
+              </Text>
 
               <Pressable onPress={closeAddModal}>
                 <FontAwesome5 name="times" size={18} color="#6b7280" />
@@ -437,24 +456,28 @@ export default function DonationHistoryScreen() {
             <View className="gap-4">
               <View>
                 <Text className="mb-2 text-sm font-semibold text-gray-600">
-                  Donation Date
+                  {t('history.donationDate')}
                 </Text>
                 <Pressable
                   onPress={() => setShowDatePicker(true)}
                   className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-4"
                 >
                   <Text className="text-base text-gray-800">
-                    {formatDisplayDate(donationDate)}
+                    {donationDate
+                      ? formatDisplayDate(donationDate)
+                      : t('history.selectDate')}
                   </Text>
                 </Pressable>
               </View>
 
               <View>
-                <Text className="mb-2 text-sm font-semibold text-gray-600">Location</Text>
+                <Text className="mb-2 text-sm font-semibold text-gray-600">
+                  {t('history.location')}
+                </Text>
                 <TextInput
                   value={location}
                   onChangeText={setLocation}
-                  placeholder="Enter donation center"
+                  placeholder={t('history.placeholders.center')}
                   className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-4 text-base text-gray-900"
                   placeholderTextColor="#9CA3AF"
                 />
@@ -462,34 +485,38 @@ export default function DonationHistoryScreen() {
 
               <View>
                 <Text className="mb-2 text-sm font-semibold text-gray-600">
-                  Blood Group
+                  {t('history.bloodGroupField')}
                 </Text>
                 <TextInput
                   value={bloodGroup}
                   onChangeText={setBloodGroup}
-                  placeholder="e.g. A+"
+                  placeholder={t('history.placeholders.bloodGroup')}
                   className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-4 text-base text-gray-900"
                   placeholderTextColor="#9CA3AF"
                 />
               </View>
 
               <View>
-                <Text className="mb-2 text-sm font-semibold text-gray-600">Amount</Text>
+                <Text className="mb-2 text-sm font-semibold text-gray-600">
+                  {t('history.amountField')}
+                </Text>
                 <TextInput
                   value={units}
                   onChangeText={setUnits}
-                  placeholder="e.g. 1 pint"
+                  placeholder={t('history.placeholders.amount')}
                   className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-4 text-base text-gray-900"
                   placeholderTextColor="#9CA3AF"
                 />
               </View>
 
               <View>
-                <Text className="mb-2 text-sm font-semibold text-gray-600">Notes</Text>
+                <Text className="mb-2 text-sm font-semibold text-gray-600">
+                  {t('history.notesField')}
+                </Text>
                 <TextInput
                   value={notes}
                   onChangeText={setNotes}
-                  placeholder="Optional notes"
+                  placeholder={t('history.placeholders.notes')}
                   multiline
                   className="min-h-[96px] rounded-xl border border-gray-200 bg-gray-50 px-4 py-4 text-base text-gray-900"
                   placeholderTextColor="#9CA3AF"
@@ -501,7 +528,9 @@ export default function DonationHistoryScreen() {
                 onPress={handleAddManualEntry}
                 className="mt-2 items-center rounded-xl bg-red-600 py-4"
               >
-                <Text className="text-base font-semibold text-white">Save Entry</Text>
+                <Text className="text-base font-semibold text-white">
+                  {t('history.saveEntry')}
+                </Text>
               </Pressable>
             </View>
           </View>

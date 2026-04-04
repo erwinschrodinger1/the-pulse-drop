@@ -21,12 +21,13 @@ import * as ImageManipulator from 'expo-image-manipulator';
 import { supabase } from '@/lib/supabase';
 import ElevatedContainer from '@/components/ElevatedContainer';
 import { useAuthContext } from '@/hooks/use-auth-context';
+import { useTranslation } from 'react-i18next';
 
 const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] as const;
 const AVATAR_BUCKET = 'images';
 
 function formatDate(date: Date | null) {
-  if (!date) return 'Select date';
+  if (!date) return null;
 
   return date.toLocaleDateString('en-US', {
     month: 'long',
@@ -51,6 +52,7 @@ function parseStoredDate(dateString?: string | null) {
 
 export default function ProfileEditScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -79,7 +81,10 @@ export default function ProfileEditScreen() {
         setSelectedBloodGroup(metadata.blood_group ?? '');
         setLastDonated(parseStoredDate(metadata.last_blood_donated));
       } catch (error: any) {
-        Alert.alert('Error', error?.message ?? 'Could not load profile.');
+        Alert.alert(
+          t('profile.errors.title'),
+          error?.message ?? t('profile.errors.loadFailed'),
+        );
       } finally {
         setLoading(false);
       }
@@ -161,7 +166,10 @@ export default function ProfileEditScreen() {
       const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
       if (!permission.granted) {
-        Alert.alert('Permission needed', 'Please allow photo library access.');
+        Alert.alert(
+          t('profile.permissions.neededTitle'),
+          t('profile.permissions.libraryMessage'),
+        );
         return;
       }
 
@@ -177,7 +185,10 @@ export default function ProfileEditScreen() {
       setUploadingImage(true);
       await uploadAvatar(result.assets[0].uri);
     } catch (error: any) {
-      Alert.alert('Upload failed', error?.message ?? 'Could not upload image.');
+      Alert.alert(
+        t('profile.errors.uploadFailedTitle'),
+        error?.message ?? t('profile.errors.uploadFailed'),
+      );
     } finally {
       setUploadingImage(false);
     }
@@ -188,7 +199,10 @@ export default function ProfileEditScreen() {
       const permission = await ImagePicker.requestCameraPermissionsAsync();
 
       if (!permission.granted) {
-        Alert.alert('Permission needed', 'Please allow camera access.');
+        Alert.alert(
+          t('profile.permissions.neededTitle'),
+          t('profile.permissions.cameraMessage'),
+        );
         return;
       }
 
@@ -203,7 +217,10 @@ export default function ProfileEditScreen() {
       setUploadingImage(true);
       await uploadAvatar(result.assets[0].uri);
     } catch (error: any) {
-      Alert.alert('Upload failed', error?.message ?? 'Could not upload image.');
+      Alert.alert(
+        t('profile.errors.uploadFailedTitle'),
+        error?.message ?? t('profile.errors.uploadFailed'),
+      );
     } finally {
       setUploadingImage(false);
     }
@@ -211,12 +228,18 @@ export default function ProfileEditScreen() {
 
   const handleSave = async () => {
     if (!fullName.trim()) {
-      Alert.alert('Missing name', 'Please enter your full name.');
+      Alert.alert(
+        t('profile.errors.missingNameTitle'),
+        t('profile.errors.missingNameMessage'),
+      );
       return;
     }
 
     if (!selectedBloodGroup) {
-      Alert.alert('Missing blood group', 'Please select your blood group.');
+      Alert.alert(
+        t('profile.errors.missingBloodGroupTitle'),
+        t('profile.errors.missingBloodGroupMessage'),
+      );
       return;
     }
 
@@ -239,10 +262,13 @@ export default function ProfileEditScreen() {
         throw new Error('Profile updated but no user was returned.');
       }
 
-      Alert.alert('Success', 'Your profile has been updated.');
+      Alert.alert(t('profile.success.title'), t('profile.success.updated'));
       router.back();
     } catch (error: any) {
-      Alert.alert('Save failed', error?.message ?? 'Something went wrong.');
+      Alert.alert(
+        t('profile.errors.saveFailedTitle'),
+        error?.message ?? t('profile.errors.saveFailed'),
+      );
     } finally {
       setSaving(false);
     }
@@ -252,7 +278,7 @@ export default function ProfileEditScreen() {
     return (
       <View className="flex-1 items-center justify-center bg-white">
         <ActivityIndicator size="large" color="#2563EB" />
-        <Text className="mt-3 text-gray-500">Loading profile...</Text>
+        <Text className="mt-3 text-gray-500">{t('profile.loading')}</Text>
       </View>
     );
   }
@@ -264,14 +290,12 @@ export default function ProfileEditScreen() {
       showsVerticalScrollIndicator={false}
     >
       <View className="mt-12 px-6">
-        <Text className="text-3xl font-bold text-black">Edit Profile</Text>
-        <Text className="mt-2 text-base text-gray-500">
-          Update your personal and donor information.
-        </Text>
+        <Text className="text-3xl font-bold text-black">{t('profile.title')}</Text>
+        <Text className="mt-2 text-base text-gray-500">{t('profile.subtitle')}</Text>
       </View>
 
       <ElevatedContainer className="mx-6 mt-6 px-5 py-6">
-        <Text className="text-xl font-bold text-black">Profile Picture</Text>
+        <Text className="text-xl font-bold text-black">{t('profile.pictureTitle')}</Text>
 
         <View className="mt-5 items-center">
           <Image
@@ -283,7 +307,9 @@ export default function ProfileEditScreen() {
           {uploadingImage && (
             <View className="mt-3 flex-row items-center">
               <ActivityIndicator size="small" color="#2563EB" />
-              <Text className="ml-2 text-sm text-gray-500">Uploading image...</Text>
+              <Text className="ml-2 text-sm text-gray-500">
+                {t('profile.uploadingImage')}
+              </Text>
             </View>
           )}
         </View>
@@ -298,7 +324,7 @@ export default function ProfileEditScreen() {
           >
             <FontAwesome5 name="images" size={16} color="white" />
             <Text className="ml-2 text-base font-semibold text-white">
-              Select from device
+              {t('profile.selectFromDevice')}
             </Text>
           </Pressable>
 
@@ -309,29 +335,33 @@ export default function ProfileEditScreen() {
           >
             <FontAwesome5 name="camera" size={16} color="#2563EB" />
             <Text className="ml-2 text-base font-semibold text-blue-600">
-              Take picture
+              {t('profile.takePicture')}
             </Text>
           </Pressable>
         </View>
       </ElevatedContainer>
 
       <ElevatedContainer className="mx-6 mt-6 px-5 py-6">
-        <Text className="text-xl font-bold text-black">Personal Info</Text>
+        <Text className="text-xl font-bold text-black">{t('profile.personalInfo')}</Text>
 
-        <Text className="mt-5 text-sm font-medium text-gray-500">Full Name</Text>
+        <Text className="mt-5 text-sm font-medium text-gray-500">
+          {t('profile.fullName')}
+        </Text>
         <TextInput
           value={fullName}
           onChangeText={setFullName}
-          placeholder="Enter your full name"
+          placeholder={t('profile.fullNamePlaceholder')}
           placeholderTextColor="#9CA3AF"
           className="mt-2 rounded-xl border border-gray-200 bg-gray-50 px-4 py-4 text-base text-gray-900"
         />
       </ElevatedContainer>
 
       <ElevatedContainer className="mx-6 mt-6 px-5 py-6">
-        <Text className="text-xl font-bold text-black">Blood Group</Text>
+        <Text className="text-xl font-bold text-black">
+          {t('profile.bloodGroupTitle')}
+        </Text>
         <Text className="mt-1 text-sm text-gray-500">
-          Select the blood group that matches your profile.
+          {t('profile.bloodGroupSubtitle')}
         </Text>
 
         <View className="mt-5 flex-row flex-wrap gap-3">
@@ -360,24 +390,24 @@ export default function ProfileEditScreen() {
       </ElevatedContainer>
 
       <ElevatedContainer className="mx-6 mt-6 px-5 py-6">
-        <Text className="text-xl font-bold text-black">Last Donation</Text>
+        <Text className="text-xl font-bold text-black">{t('profile.lastDonation')}</Text>
 
         <Pressable
           onPress={() => setShowDatePicker(true)}
           className="mt-5 w-full flex-row items-center justify-between rounded-xl border-2 border-blue-400 bg-gray-100 px-4 py-4"
         >
           <Text className="text-base font-semibold text-gray-800">
-            {lastDonated ? formattedDate : 'Select date'}
+            {lastDonated ? formattedDate : t('profile.selectDate')}
           </Text>
           <FontAwesome5 name="calendar-alt" size={18} color="#6B7280" />
         </Pressable>
 
         <Text className="mt-4 text-base font-semibold text-gray-500">
-          When did you last donate?
+          {t('profile.lastDonationPrompt')}
         </Text>
 
         <Text className="mt-1 text-sm text-gray-400">
-          Leave it empty if you have never donated before.
+          {t('profile.lastDonationHint')}
         </Text>
       </ElevatedContainer>
 
@@ -400,7 +430,7 @@ export default function ProfileEditScreen() {
           }`}
         >
           <Text className="text-base font-semibold text-white">
-            {saving ? 'Saving...' : 'Save Changes'}
+            {saving ? t('profile.saving') : t('profile.saveChanges')}
           </Text>
         </Pressable>
 
@@ -409,7 +439,9 @@ export default function ProfileEditScreen() {
           disabled={saving || uploadingImage}
           className="items-center rounded-md border border-gray-200 py-4"
         >
-          <Text className="text-base font-semibold text-gray-700">Cancel</Text>
+          <Text className="text-base font-semibold text-gray-700">
+            {t('common.actions.cancel')}
+          </Text>
         </Pressable>
       </View>
     </ScrollView>

@@ -5,6 +5,7 @@ import ElevatedContainer from '@/components/ElevatedContainer';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { ProgressChart } from 'react-native-chart-kit';
 import { useAuthContext } from '@/hooks/use-auth-context';
+import { useTranslation } from 'react-i18next';
 
 type UserProfile = {
   fullName: string;
@@ -27,6 +28,7 @@ function getDaysSince(dateString: string | null) {
 }
 
 export default function Home() {
+  const { t } = useTranslation();
   const chartConfig = {
     backgroundColor: 'transparent',
     backgroundGradientFromOpacity: 0,
@@ -94,7 +96,7 @@ export default function Home() {
     return (
       <View className="flex-1 items-center justify-center bg-white">
         <ActivityIndicator size="large" color="#dc2626" />
-        <Text className="mt-3 text-gray-500">Loading profile...</Text>
+        <Text className="mt-3 text-gray-500">{t('home.loading')}</Text>
       </View>
     );
   }
@@ -138,7 +140,9 @@ export default function Home() {
 
         <View className="w-full flex-row items-center justify-between">
           <Text className="text-4xl font-bold text-red-600">{profile.bloodGroup}</Text>
-          <Text className="text-xl font-semibold">{profile.donations} donations</Text>
+          <Text className="text-xl font-semibold">
+            {t('home.donations', { count: profile.donations })}
+          </Text>
         </View>
 
         <View className="w-full flex-row items-center justify-between">
@@ -146,14 +150,14 @@ export default function Home() {
           <View className="flex-row items-end">
             <Entypo name="drop" size={24} color="red" />
             <Text className="text-xl font-semibold text-red-600">
-              {profile.credits} credits
+              {profile.credits} {t('home.credits')}
             </Text>
           </View>
         </View>
       </ElevatedContainer>
 
       <ElevatedContainer className="mx-8 mt-6 flex items-center justify-center">
-        <Text className="text-2xl font-bold">Donation Progress</Text>
+        <Text className="text-2xl font-bold">{t('home.donationProgress')}</Text>
         <View className="relative">
           <ProgressChart
             data={{ data: [progress] }}
@@ -172,15 +176,12 @@ export default function Home() {
           </View>
         </View>
 
-        <Text className="text-xl font-semibold">Since last donation</Text>
+        <Text className="text-xl font-semibold">{t('home.sinceLastDonation')}</Text>
 
         <Text className="mt-2 text-center text-gray-700">
           {profile.lastBloodDonated
-            ? `Keep up the great work! You're just ${Math.max(
-                90 - daysSinceLast,
-                0,
-              )} days away from being eligible to donate again.`
-            : 'You have not added a donation date yet.'}
+            ? t('home.daysToEligible', { days: Math.max(90 - daysSinceLast, 0) })
+            : t('home.noDonationDate')}
         </Text>
       </ElevatedContainer>
 
@@ -203,48 +204,31 @@ export default function Home() {
                 <FontAwesome5 name="times" size={18} color="black" />
               </Pressable>
 
-              <Text className="mb-2 text-2xl font-bold">Credit Score</Text>
+              <Text className="mb-2 text-2xl font-bold">{t('home.creditScore')}</Text>
 
               <Text className="leading-6 text-gray-700">
-                Your Pulse Drop Credit Score represents your trust, reliability, and
-                health readiness inside the community.
-                {'\n\n'}
-                It increases when you:
+                {t('home.creditInfo.intro')}
               </Text>
 
               <View className="ml-3 mt-2">
-                <Text className="text-gray-700">
-                  • Donate blood on time at verified centers
-                </Text>
-                <Text className="text-gray-700">• Maintain a healthy donor profile</Text>
-                <Text className="text-gray-700">
-                  • Respond quickly to donation requests
-                </Text>
-                <Text className="text-gray-700">
-                  • Complete identity & health verification
-                </Text>
+                <Text className="text-gray-700">{t('home.creditInfo.increase1')}</Text>
+                <Text className="text-gray-700">{t('home.creditInfo.increase2')}</Text>
+                <Text className="text-gray-700">{t('home.creditInfo.increase3')}</Text>
+                <Text className="text-gray-700">{t('home.creditInfo.increase4')}</Text>
               </View>
 
               <Text className="mt-4 leading-6 text-gray-700">
-                A higher score unlocks:
+                {t('home.creditInfo.unlocks')}
               </Text>
 
               <View className="ml-3 mt-2">
-                <Text className="text-gray-700">
-                  • Lower-cost health & life insurance
-                </Text>
-                <Text className="text-gray-700">
-                  • Faster approval for emergency blood requests
-                </Text>
-                <Text className="text-gray-700">
-                  • Access to exclusive donor benefits
-                </Text>
+                <Text className="text-gray-700">{t('home.creditInfo.unlock1')}</Text>
+                <Text className="text-gray-700">{t('home.creditInfo.unlock2')}</Text>
+                <Text className="text-gray-700">{t('home.creditInfo.unlock3')}</Text>
               </View>
 
               <Text className="mt-4 leading-6 text-gray-700">
-                The more consistent and reliable you are, the stronger your score becomes
-                — helping you, your family, and the entire Pulse Drop network stay
-                protected.
+                {t('home.creditInfo.outro')}
               </Text>
             </ElevatedContainer>
           </Pressable>

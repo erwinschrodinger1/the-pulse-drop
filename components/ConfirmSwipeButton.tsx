@@ -8,8 +8,10 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { runOnJS } from 'react-native-worklets';
+import { useTranslation } from 'react-i18next';
 
 export default function SwipeConfirmButton({ onConfirm }: { onConfirm: () => void }) {
+  const { t } = useTranslation();
   const translateX = useSharedValue(0);
 
   const TRACK_WIDTH = 280; // full track
@@ -44,7 +46,7 @@ export default function SwipeConfirmButton({ onConfirm }: { onConfirm: () => voi
       >
         {/* Center Text */}
         <Text className="absolute self-center font-semibold text-blue-700">
-          Swipe to Confirm
+          {t('swipeConfirmButton.actions.swipeToConfirm')}
         </Text>
 
         <GestureDetector gesture={panGesture}>

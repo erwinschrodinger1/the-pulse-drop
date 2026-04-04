@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import * as Linking from 'expo-linking';
 import { supabase } from '@/lib/supabase';
 import { Toast } from 'toastify-react-native';
+import { useTranslation } from 'react-i18next';
 
 function getParamFromUrl(url: string, key: string) {
   const hash = url.includes('#') ? (url.split('#')[1] ?? '') : '';
@@ -17,6 +18,7 @@ function getParamFromUrl(url: string, key: string) {
 
 export default function AuthCallbackScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const handledRef = useRef(false);
 
   useEffect(() => {
@@ -51,7 +53,7 @@ export default function AuthCallbackScreen() {
 
           if (error) {
             console.error('exchangeCodeForSession failed:', error);
-            Toast.error('Authentication link is invalid or expired.');
+            Toast.error(t('auth.callback.errors.invalidLink'));
             router.replace('/(auth)/login');
             return;
           }
@@ -65,19 +67,19 @@ export default function AuthCallbackScreen() {
 
           if (error) {
             console.error('setSession failed:', error);
-            Toast.error('Authentication link is invalid or expired.');
+            Toast.error(t('auth.callback.errors.invalidLink'));
             router.replace('/(auth)/login');
             return;
           }
         } else {
           // No usable session payload in URL
           if (type === 'recovery') {
-            Toast.error('Recovery link is invalid or incomplete.');
+            Toast.error(t('auth.callback.errors.recoveryInvalid'));
             router.replace('/(auth)/forgot');
             return;
           }
 
-          Toast.success('Email confirmed. Please sign in.');
+          Toast.success(t('auth.callback.success.emailConfirmedSignIn'));
           router.replace('/(auth)/login');
           return;
         }
@@ -90,25 +92,25 @@ export default function AuthCallbackScreen() {
 
         if (type === 'recovery') {
           if (session) {
-            Toast.success('Link verified. Set your new password.');
+            Toast.success(t('auth.callback.success.recoveryReady'));
             router.replace('/(auth)/update-password');
           } else {
-            Toast.error('Recovery session missing. Please use the reset link again.');
+            Toast.error(t('auth.callback.errors.recoveryMissingSession'));
             router.replace('/(auth)/forgot');
           }
           return;
         }
 
         if (session) {
-          Toast.success('Email verified successfully!');
+          Toast.success(t('auth.callback.success.emailVerified'));
           router.replace('/(app)/(tabs)');
         } else {
-          Toast.success('Email verified successfully. Please sign in.');
+          Toast.success(t('auth.callback.success.emailVerifiedSignIn'));
           router.replace('/(auth)/login');
         }
       } catch (error) {
         console.error('Auth callback error:', error);
-        Toast.error('Something went wrong while completing authentication.');
+        Toast.error(t('auth.callback.errors.generic'));
         router.replace('/(auth)/login');
       }
     };
@@ -119,7 +121,7 @@ export default function AuthCallbackScreen() {
   return (
     <View className="flex-1 items-center justify-center bg-white px-6">
       <ActivityIndicator size="large" color="#2563EB" />
-      <Text className="mt-4 text-base text-gray-600">Completing sign in…</Text>
+      <Text className="mt-4 text-base text-gray-600">{t('auth.callback.loading')}</Text>
     </View>
   );
 }

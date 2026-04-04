@@ -14,9 +14,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Toast } from 'toastify-react-native';
 import { supabase } from '@/lib/supabase';
+import { useTranslation } from 'react-i18next';
 
 export default function UpdatePasswordScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const [isCheckingSession, setIsCheckingSession] = useState(true);
   const [hasValidSession, setHasValidSession] = useState(false);
@@ -40,7 +42,7 @@ export default function UpdatePasswordScreen() {
 
         if (error || !session) {
           console.error('No valid session for password reset:', error);
-          Toast.error('Password reset session expired. Please request a new link.');
+          Toast.error(t('auth.updatePassword.errors.expiredSession'));
           router.replace('/(auth)/forgot');
           return;
         }
@@ -49,7 +51,7 @@ export default function UpdatePasswordScreen() {
         setUserEmail(session.user.email || '');
       } catch (err) {
         console.error('Session check error:', err);
-        Toast.error('Unable to verify reset session.');
+        Toast.error(t('auth.updatePassword.errors.sessionCheckFailed'));
         router.replace('/(auth)/forgot');
       } finally {
         setIsCheckingSession(false);
@@ -65,17 +67,17 @@ export default function UpdatePasswordScreen() {
 
   const handleUpdatePassword = async () => {
     if (!password.trim() || !confirmPassword.trim()) {
-      Toast.error('Please fill in both password fields');
+      Toast.error(t('auth.updatePassword.errors.missingFields'));
       return;
     }
 
     if (password.length < 6) {
-      Toast.error('Password must be at least 6 characters');
+      Toast.error(t('auth.updatePassword.errors.passwordTooShort'));
       return;
     }
 
     if (password !== confirmPassword) {
-      Toast.error('Passwords do not match');
+      Toast.error(t('auth.updatePassword.errors.passwordMismatch'));
       return;
     }
 
@@ -88,11 +90,13 @@ export default function UpdatePasswordScreen() {
 
       console.log('Password updated for user:', data);
 
-      Toast.success('Password updated successfully! Please sign in.');
+      Toast.success(t('auth.updatePassword.success.passwordUpdated'));
       router.replace('/(auth)/login');
     } catch (error: unknown) {
       const message =
-        error instanceof Error ? error.message : 'Failed to update password';
+        error instanceof Error
+          ? error.message
+          : t('auth.updatePassword.errors.updateFailed');
       Toast.error(message);
     }
   };
@@ -101,7 +105,9 @@ export default function UpdatePasswordScreen() {
     return (
       <View className="flex-1 items-center justify-center bg-white">
         <ActivityIndicator size="large" color="#2563EB" />
-        <Text className="mt-4 text-base text-gray-600">Verifying reset link…</Text>
+        <Text className="mt-4 text-base text-gray-600">
+          {t('auth.updatePassword.checkingSession')}
+        </Text>
       </View>
     );
   }
@@ -140,11 +146,11 @@ export default function UpdatePasswordScreen() {
           </View>
 
           <Text className="text-center text-3xl font-semibold text-gray-900">
-            Update Password
+            {t('auth.updatePassword.title')}
           </Text>
 
           <Text className="mb-6 mt-2 text-center leading-5 text-gray-500">
-            Enter your new password for {userEmail}
+            {t('auth.updatePassword.subtitle', { email: userEmail })}
           </Text>
 
           {/* New Password */}
@@ -157,7 +163,7 @@ export default function UpdatePasswordScreen() {
             <TextInput
               value={password}
               onChangeText={setPassword}
-              placeholder="New password"
+              placeholder={t('auth.updatePassword.newPasswordPlaceholder')}
               placeholderTextColor="#9CA3AF"
               secureTextEntry={securePassword}
               className="ml-3 flex-1 text-gray-900"
@@ -188,7 +194,7 @@ export default function UpdatePasswordScreen() {
             <TextInput
               value={confirmPassword}
               onChangeText={setConfirmPassword}
-              placeholder="Confirm password"
+              placeholder={t('auth.updatePassword.confirmPasswordPlaceholder')}
               placeholderTextColor="#9CA3AF"
               secureTextEntry={secureConfirm}
               className="ml-3 flex-1 text-gray-900"
@@ -216,13 +222,19 @@ export default function UpdatePasswordScreen() {
               canSubmit ? 'bg-blue-600' : 'bg-blue-300'
             }`}
           >
-            <Text className="text-base font-semibold text-white">Update Password</Text>
+            <Text className="text-base font-semibold text-white">
+              {t('auth.updatePassword.submitButton')}
+            </Text>
           </Pressable>
 
           <View className="mt-6 flex-row justify-center">
-            <Text className="text-gray-500">Remember your password? </Text>
+            <Text className="text-gray-500">
+              {t('auth.updatePassword.rememberPassword')}{' '}
+            </Text>
             <Pressable onPress={() => router.replace('/(auth)/login')} hitSlop={10}>
-              <Text className="font-semibold text-blue-600">Sign in</Text>
+              <Text className="font-semibold text-blue-600">
+                {t('common.actions.signIn')}
+              </Text>
             </Pressable>
           </View>
         </View>
