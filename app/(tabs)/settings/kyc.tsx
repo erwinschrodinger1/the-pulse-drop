@@ -339,13 +339,13 @@ export default function KYCScreen() {
   return (
     <ScrollView
       className="flex-1 bg-white"
-      contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
+      contentContainerStyle={{ padding: 16, paddingVertical: 40 }}
       showsVerticalScrollIndicator={false}
     >
       <View className="mb-2 flex-row items-center">
         <Pressable
           onPress={() => router.back()}
-          className="mr-3 h-10 w-10 items-center justify-center rounded-full bg-gray-100"
+          className="mr-5 h-10 w-10 items-center justify-center rounded-full bg-gray-100"
         >
           <Ionicons name="chevron-back" size={20} color="#111827" />
         </Pressable>

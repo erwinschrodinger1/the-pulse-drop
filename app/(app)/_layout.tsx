@@ -1,9 +1,5 @@
-import AppHeader from '@/components/AppHeader';
-
 import { Stack } from 'expo-router';
-import { Image, ImageBackground, ScrollView, View, Text } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import BottomNav from '@/components/NavigationBar';
+import { Image, ImageBackground, View } from 'react-native';
 
 export default function Layout() {
   return (

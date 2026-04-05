@@ -225,7 +225,7 @@ export default function SettingsScreen() {
 
   return (
     <ScrollView
-      className="flex-1 bg-gray-50 pb-10"
+      className="flex-1 bg-gray-50 pb-10 pt-5"
       contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
       showsVerticalScrollIndicator={false}
     >
