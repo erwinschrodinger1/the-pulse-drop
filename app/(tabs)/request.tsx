@@ -131,10 +131,10 @@ export default function RequestPage() {
   }
 
   return (
-    <View className="mx-4 flex-1 pt-4">
+    <View className="mx-4 flex-1">
       {/* Title & toggle */}
       <View className="mb-4 flex-row items-center justify-between">
-        <Text className="text-xl font-semibold">{t('request.title')}</Text>
+        <Text className="text-2xl font-semibold">Requests</Text>
         <ViewModeToggle
           value={mode}
           onChange={(value) => setMode(value as 'map' | 'list')}
