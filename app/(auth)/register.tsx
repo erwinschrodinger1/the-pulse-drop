@@ -8,7 +8,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
-  ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -54,16 +53,11 @@ export default function RegisterScreen() {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior="padding"
       keyboardVerticalOffset={Platform.OS === 'ios' ? 24 : 0}
-      className="flex-1 bg-white"
+      className="flex-1 justify-center bg-white"
     >
-      <ScrollView
-        className="flex-1 px-6"
-        contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
+      <View className="flex-1 flex-grow justify-center px-6">
         <View className="mb-6 items-center">
           <Image
             source={require('@/assets/logo-with-text.png')}
@@ -158,7 +152,7 @@ export default function RegisterScreen() {
             </Text>
           </Pressable>
         </View>
-      </ScrollView>
+      </View>
     </KeyboardAvoidingView>
   );
 }
