@@ -101,8 +101,8 @@ export default function Home() {
 
   return (
     <View className="flex-1">
-      <View className="mt-[-42] items-center">
-        <View className="relative aspect-square h-auto w-5/6">
+      <View className="items-center">
+        <View className="relative aspect-square h-auto w-4/5">
           {/* Scribble / profile background */}
           <Image
             source={require('@/assets/images/profile-background.png')}
@@ -133,18 +133,18 @@ export default function Home() {
           }}
           className="mb-2 self-end"
         >
-          <FontAwesome5 name="info-circle" size={14} color="black" />
+          <FontAwesome5 name="info-circle" size={15} color="black" />
         </Pressable>
 
         <View className="w-full flex-row items-center justify-between">
-          <Text className="text-4xl font-bold text-red-600">{profile.bloodGroup}</Text>
+          <Text className="text-2xl font-bold text-red-600">{profile.bloodGroup}</Text>
           <Text className="text-xl font-semibold">{profile.donations} donations</Text>
         </View>
 
         <View className="w-full flex-row items-center justify-between">
-          <Text className="text-4xl font-bold">{profile.fullName}</Text>
+          <Text className="text-2xl font-bold">{profile.fullName}</Text>
           <View className="flex-row items-end">
-            <Entypo name="drop" size={24} color="red" />
+            {/* <Entypo name="drop" size={20} color="red" /> */}
             <Text className="text-xl font-semibold text-red-600">
               {profile.credits} credits
             </Text>
@@ -158,7 +158,7 @@ export default function Home() {
           <ProgressChart
             data={{ data: [progress] }}
             width={130}
-            height={130}
+            height={100}
             radius={40}
             strokeWidth={12}
             chartConfig={chartConfig}

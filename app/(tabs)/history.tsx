@@ -208,7 +208,7 @@ export default function DonationHistoryScreen() {
 
   return (
     <ScrollView
-      className="flex-1 px-4 pt-6"
+      className="flex-1 px-4"
       contentContainerStyle={{ paddingBottom: 32 }}
       showsVerticalScrollIndicator={false}
     >
