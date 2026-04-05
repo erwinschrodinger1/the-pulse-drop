@@ -19,7 +19,9 @@
         }
       ],
       "expo-background-task",
-      "expo-localization"
+      "@react-native-community/datetimepicker",
+      "expo-web-browser",
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true,
