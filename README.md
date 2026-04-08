@@ -185,10 +185,11 @@ We need contributors in:
 
 ## 👥 Contributors
 
-| Name               | Role                           |
-| ------------------ | ------------------------------ |
-| **Nirjal Bhurtel** | Founder, Designer, Developer   |
-| **You?**           | Add yourself via your first PR |
+| Name                  | Role                                     |
+| --------------------- | ---------------------------------------- |
+| **Nirjal Bhurtel**    | Founder, Designer, Developer             |
+| **Akarshan Shrestha** | Co-Founder, Frontend Developer, Designer |
+| **Aayusha Jaspau**    | Contributor                              |
 
 ---
 
