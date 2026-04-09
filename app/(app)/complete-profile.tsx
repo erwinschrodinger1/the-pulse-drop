@@ -135,7 +135,7 @@ export default function CompleteProfile() {
 
       if (error) throw error;
 
-      router.replace('/(app)/(tabs)');
+      router.replace('/(tabs)');
     } catch (err: any) {
       Alert.alert(
         t('completeProfile.errors.saveFailedTitle'),

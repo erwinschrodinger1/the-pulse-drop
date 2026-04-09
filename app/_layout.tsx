@@ -44,7 +44,7 @@ function Gate() {
       router.replace('/(app)/complete-profile');
       return;
     }
-    router.replace('/(app)/(tabs)');
+    router.replace('/(tabs)');
   }, [user, ready, hasOnboarded, isLoggedIn]);
 
   return <Stack screenOptions={{ headerShown: false }} />;

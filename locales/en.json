@@ -195,6 +195,9 @@
       "outro": "The more consistent and reliable you are, the stronger your score becomes — helping you, your family, and the entire Pulse Drop network stay protected."
     }
   },
+  "donate": {
+    "title": "Donate"
+  },
   "request": {
     "title": "Requests",
     "yourLocation": "Your Location",

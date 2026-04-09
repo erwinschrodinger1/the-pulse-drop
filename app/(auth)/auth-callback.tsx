@@ -103,7 +103,7 @@ export default function AuthCallbackScreen() {
 
         if (session) {
           Toast.success(t('auth.callback.success.emailVerified'));
-          router.replace('/(app)/(tabs)');
+          router.replace('/(tabs)');
         } else {
           Toast.success(t('auth.callback.success.emailVerifiedSignIn'));
           router.replace('/(auth)/login');
