@@ -11,7 +11,10 @@ export default function ElevatedContainer({
   ...rest
 }: ElevatedContainerProps) {
   return (
-    <View className={`rounded-lg bg-white p-4 shadow-md ${className}`} {...rest}>
+    <View
+      className={`rounded-lg border border-gray-200 bg-white/80 px-4 py-2 shadow-sm ${className}`}
+      {...rest}
+    >
       {children}
     </View>
   );
