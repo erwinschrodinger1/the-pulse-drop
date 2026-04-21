@@ -203,7 +203,18 @@
     }
   },
   "donate": {
-    "title": "Donate"
+    "title": "Donate",
+    "header": "Blood Requests Near You",
+    "loading": "Loading requests...",
+    "bloodRequestItem": {
+      "bloodRequired": "Blood required",
+      "amount": "Amount",
+      "ml": "ml",
+      "contact": "Contact",
+      "phone": "Phone",
+      "emergency": "EMERGENCY",
+      "notAvailable": "N/A"
+    }
   },
   "request": {
     "title": "Requests",

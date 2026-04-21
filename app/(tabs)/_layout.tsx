@@ -12,6 +12,7 @@ import {
 import { Colors } from '@/constants/colors';
 import AppHeader from '@/components/AppHeader';
 import { t } from 'i18next';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const TABS = [
   {
@@ -31,11 +32,11 @@ const TABS = [
     showHeader: true,
   },
   {
-    name: 'history',
-    label: 'history',
+    name: 'community',
+    label: 'Community',
     icon: 'grid-outline',
     activeIcon: 'grid',
-    route: '/history',
+    route: '/community',
     showHeader: true,
   },
   {
@@ -78,11 +79,10 @@ const styles = StyleSheet.create({
     marginTop: Platform.OS === 'ios' ? 1 : 2,
   },
   tabIndicator: {
-    marginTop: 0,
+    marginTop: 4,
     height: 4,
     width: 50,
-    borderTopLeftRadius: 50,
-    borderTopRightRadius: 50,
+    borderRadius: 50,
     backgroundColor: 'transparent',
   },
   tabIndicatorActive: {
@@ -175,7 +175,7 @@ export default function Layout() {
   const isDonateActive = pathname.startsWith('/donate');
 
   return (
-    <View className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-white">
       <ImageBackground
         source={require('@/assets/images/background.png')}
         className="flex-1"
@@ -250,11 +250,12 @@ export default function Layout() {
           {RIGHT_TABS.map((tab) => (
             <Tabs.Screen key={tab.name} name={tab.name} options={getTabOptions(tab)} />
           ))}
+          <Tabs.Screen name="history" options={{ href: null }} />
           <Tabs.Screen name="details" options={{ href: null }} />
           <Tabs.Screen name="profile" options={{ href: null }} />
           <Tabs.Screen name="settings/kyc" options={{ href: null, headerShown: false }} />
         </Tabs>
       </ImageBackground>
-    </View>
+    </SafeAreaView>
   );
 }
